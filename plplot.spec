@@ -359,6 +359,7 @@ Summary:	PLplot library - Python binding
 Summary(pl):	Biblioteka PLplot - wi±zanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+%pyrequires_eq	python-libs
 
 %description -n python-plplot
 PLplot library - Python binding.
