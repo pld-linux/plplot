@@ -11,16 +11,14 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykres闚 naukowych
 Name:		plplot
-Version:	5.2.1
-Release:	2
+Version:	5.3.0
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	23c7260470acff2cb40c1e4b19054550
-Source1:	%{name}-docbook.m4
-Patch0:		%{name}-errno.patch
-Patch1:		%{name}-gcc33.patch
-Patch2:		%{name}-am18.patch
+# Source0-md5:	38ea3512dbbbd9dd98e1683931f32e2a
+Patch0:		%{name}-am18.patch
+Patch1:		%{name}-conflict.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -290,24 +288,13 @@ Summary(pl):	Biblioteka PLplot - pliki programistyczne wi您ania dla Javy
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-java = %{version}-%{release}
+Obsoletes:	plplot-java-static
 
 %description java-devel
 PLplot library - Java binding development files.
 
 %description java -l pl
 Biblioteka PLplot - pliki programistyczne wi您ania dla Javy.
-
-%package java-static
-Summary:	PLplot library - Java binding static library
-Summary(pl):	Biblioteka PLplot - statyczna biblioteka wi您ania dla Javy
-Group:		Development/Libraries
-Requires:	%{name}-java-devel = %{version}-%{release}
-
-%description java-static
-PLplot library - Java binding static library.
-
-%description java-static -l pl
-Biblioteka PLplot - statyczna biblioteka wi您ania dla Javy.
 
 %package tcl
 Summary:	PLplot library - Tcl/Tk binding
@@ -401,10 +388,6 @@ Biblioteka PLplot - przyk豉dy do wi您ania dla Pythona.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-
-test ! -f doc/docbook/docbook.m4
-cp -f %{SOURCE1} doc/docbook/docbook.m4
 
 %build
 %{__libtoolize}
@@ -413,7 +396,7 @@ cp -f %{SOURCE1} doc/docbook/docbook.m4
 %{__autoheader}
 %{__automake}
 %configure \
-	DATA_DIR="%{_lib}/%{name}%{version}/data" \
+	DATA_DIR="%{_libdir}/%{name}%{version}/data" \
 	PYTHON_INC_DIR=/usr/include/python2.3 \
 	TCLLIBDIR="%{_ulibdir}" \
 	TKLIBDIR="%{_ulibdir}" \
@@ -422,11 +405,11 @@ cp -f %{SOURCE1} doc/docbook/docbook.m4
 	%{!?with_svga:--disable-linuxvga} \
 	%{?with_gnome:--enable-gnome} \
 	%{?with_java:JAVA_HOME=/usr/%{_lib}/java --enable-java} \
+	--enable-octave \
+	--with-pkg-config \
 	--with-pthreads
 
-# workaround: add missing libnn_la_LIBADD this way
-%{__make} \
-	libnn_la_LIBADD="-lqhull"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -435,14 +418,15 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}
-mv -f $RPM_BUILD_ROOT%{_libdir}/plplot%{version}/examples \
+mv -f $RPM_BUILD_ROOT%{_libdir}/plplot%{version}/data/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-%if %{with java}
-mv -f $RPM_BUILD_ROOT%{_libdir}/java $RPM_BUILD_ROOT%{_datadir}/java
-mv -f $RPM_BUILD_ROOT%{_datadir}/java/plplot/examples \
-	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/java
-%endif
 mv -f $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
+%if %{with java}
+# java must stay in libdir - JNI wrapper included
+mv -f $RPM_BUILD_ROOT%{_libdir}/java/plplot/examples \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/java
+mv -f $RPM_BUILD_ROOT%{_libdir}/java/plplot/core/README.javaAPI installed-docs
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -456,9 +440,6 @@ rm -rf $RPM_BUILD_ROOT
 %post	f77 -p /sbin/ldconfig
 %postun	f77 -p /sbin/ldconfig
 
-%post	java -p /sbin/ldconfig
-%postun	java -p /sbin/ldconfig
-
 %post	tcl -p /sbin/ldconfig
 %postun	tcl -p /sbin/ldconfig
 
@@ -471,8 +452,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/plrender
 %attr(755,root,root) %{_bindir}/pltek
 %attr(755,root,root) %{_bindir}/pstex2eps
-%attr(755,root,root) %{_libdir}/libcsa.so.*.*.*
-%attr(755,root,root) %{_libdir}/libnn.so.*.*.*
+%attr(755,root,root) %{_libdir}/libcsirocsa.so.*.*.*
+%attr(755,root,root) %{_libdir}/libcsironn.so.*.*.*
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
@@ -571,28 +552,32 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/plplot-config
 %attr(755,root,root) %{_bindir}/plplot_libtool
-%attr(755,root,root) %{_libdir}/libcsa.so
-%attr(755,root,root) %{_libdir}/libnn.so
+%attr(755,root,root) %{_libdir}/libcsirocsa.so
+%attr(755,root,root) %{_libdir}/libcsironn.so
 %attr(755,root,root) %{_libdir}/libplplotd.so
-%{_libdir}/libcsa.la
-%{_libdir}/libnn.la
+%{_libdir}/libcsirocsa.la
+%{_libdir}/libcsironn.la
 %{_libdir}/libplplotd.la
 %{_includedir}/plplot
 %exclude %{_includedir}/plplot/pltcl.h
 %exclude %{_includedir}/plplot/pltk.h
 %exclude %{_includedir}/plplot/tclMatrix.h
-%{_pkgconfigdir}/plplot.pc
+%{_pkgconfigdir}/plplotd.pc
 %{_mandir}/man1/plplot_libtool.1*
 %dir %{_examplesdir}/%{name}-%{version}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
+%{_examplesdir}/%{name}-%{version}/Makefile
 %{_examplesdir}/%{name}-%{version}/c
+# perl examples use PDL::Graphics::PLplot module found in perl-PDL
+%{_examplesdir}/%{name}-%{version}/perl
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libcsa.a
-%{_libdir}/libnn.a
+%{_libdir}/libcsirocsa.a
+%{_libdir}/libcsironn.a
 %{_libdir}/libplplotd.a
 
 %files c++
@@ -603,6 +588,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so
 %{_libdir}/libplplotcxxd.la
+%{_pkgconfigdir}/plplotd-c++.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
 
@@ -618,6 +604,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf77d.so
 %{_libdir}/libplplotf77d.la
+%{_pkgconfigdir}/plplotd-f77.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f77.sh
 %{_examplesdir}/%{name}-%{version}/f77
 
@@ -628,19 +615,18 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with java}
 %files java
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotjavad.so.*.*.*
-%{_datadir}/java/plplot
+%doc installed-docs/README.javaAPI
+%dir %{_libdir}/java/plplot
+%dir %{_libdir}/java/plplot/core
+%attr(755,root,root) %{_libdir}/java/plplot/core/*.so
+%{_libdir}/java/plplot/core/*.class
+%{_libdir}/java/plplot/core/*.java
 
 %files java-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotjavad.so
-%{_libdir}/libplplotjavad.la
+%doc installed-docs/README.javaAPI
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_java.sh
 %{_examplesdir}/%{name}-%{version}/java
-
-%files java-static
-%defattr(644,root,root,755)
-%{_libdir}/libplplotjavad.a
 %endif
 
 %files tcl
@@ -649,8 +635,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
-%{_libdir}/plplot%{version}/pkgIndex.tcl
-%{_libdir}/plplot%{version}/tcl
+%dir %{_datadir}/plplot%{version}
+%{_datadir}/plplot%{version}/tcl
 %{_mandir}/man1/pltcl.1*
 %{_mandir}/man1/plserver.1*
 
@@ -663,6 +649,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plplot/pltcl.h
 %{_includedir}/plplot/pltk.h
 %{_includedir}/plplot/tclMatrix.h
+%{_pkgconfigdir}/plplotd-tcl.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_tcl.sh
 %{_examplesdir}/%{name}-%{version}/tcl
 %{_examplesdir}/%{name}-%{version}/tk
