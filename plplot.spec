@@ -37,7 +37,6 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-numpy-devel
 BuildRequires:	qhull-devel
-BuildRequires:	rpm-pythonprov
 %{?with_svga:BuildRequires:	svgalib-devel}
 # checked for but not used (generated files included in sources)
 #BuildRequires:	swig
