@@ -4,7 +4,6 @@
 %bcond_with	java		# build Java binding
 %bcond_without	svga		# don't build linuxvga driver
 #
-%include	/usr/lib/rpm/macros.python
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
