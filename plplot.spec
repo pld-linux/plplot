@@ -20,6 +20,7 @@ Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 Patch0:		%{name}-errno.patch
 Patch1:		%{name}-gcc33.patch
 URL:		http://plplot.sourceforge.net/
+BuildRequires:	automake
 BuildRequires:	cd-devel
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	freetype-devel >= 2.1.0
@@ -397,6 +398,7 @@ Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
 %patch1 -p1
 
 %build
+cp -f /usr/share/automake/config.* .
 %configure \
 	PYTHON_INC_DIR=/usr/include/python2.3 \
 	%{!?with_svga:--disable-linuxvga} \
