@@ -110,16 +110,16 @@ Sterownik linuxvga dla biblioteki PLplot. Obs³uguje wyj¶cie poprzez
 svgalib.
 
 %package driver-gnome
-Summary:	gnome driver for PLplot library
-Summary(pl):	Sterownik gnome dla biblioteki PLplot
+Summary:	GNOME driver for PLplot library
+Summary(pl):	Sterownik GNOME dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-gnome
-gnome driver for PLplot library. It supports GnomeCanvas output.
+GNOME driver for PLplot library. It supports GnomeCanvas output.
 
 %description driver-gnome -l pl
-Sterownik gnome dla biblioteki PLplot. Obs³uguje wyj¶cie do widgetu
+Sterownik GNOME dla biblioteki PLplot. Obs³uguje wyj¶cie do widgetu
 GnomeCanvas.
 
 %package driver-ntk
