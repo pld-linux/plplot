@@ -12,16 +12,19 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.2.1
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	23c7260470acff2cb40c1e4b19054550
+Source1:	%{name}-docbook.m4
 Patch0:		%{name}-errno.patch
 Patch1:		%{name}-gcc33.patch
+Patch2:		%{name}-am18.patch
 URL:		http://plplot.sourceforge.net/
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	cd-devel
+BuildRequires:	cd-devel >= 1.3-2
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
@@ -34,6 +37,7 @@ BuildRequires:	jadetex
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 BuildRequires:	octave-devel
 BuildRequires:	python-devel >= 2.3
 BuildRequires:	python-numpy-devel
@@ -46,8 +50,9 @@ BuildRequires:	tcl-devel
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
-# non-default: gnome, java
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_ulibdir	%{_prefix}/lib
 
 %description
 PLplot is a library of functions that are useful for making scientific
@@ -396,11 +401,24 @@ Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+
+test ! -f doc/docbook/docbook.m4
+cp -f %{SOURCE1} doc/docbook/docbook.m4
 
 %build
-cp -f /usr/share/automake/config.* .
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
+	DATA_DIR="%{_lib}/%{name}%{version}/data" \
 	PYTHON_INC_DIR=/usr/include/python2.3 \
+	TCLLIBDIR="%{_ulibdir}" \
+	TKLIBDIR="%{_ulibdir}" \
+	ITCLLIBDIR="%{_ulibdir}" \
+	ITKLIBDIR="%{_ulibdir}" \
 	%{!?with_svga:--disable-linuxvga} \
 	%{?with_gnome:--enable-gnome} \
 	%{?with_java:JAVA_HOME=/usr/%{_lib}/java --enable-java} \
