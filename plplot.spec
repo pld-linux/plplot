@@ -8,7 +8,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.3.1
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -402,7 +402,8 @@ cp -f /usr/share/automake/config.* libltdl
 	--enable-dg300 \
 	%{?with_gnome:--enable-gnome} \
 	--enable-imp \
-	%{?with_java:JAVA_HOME=/usr/%{_lib}/java --enable-java} \
+	%{?with_java:JAVA_HOME=/usr/%{_lib}/java} \
+	%{!?with_java:--disable-java} \
 	--enable-ljii \
 	--enable-ljiip \
 	--enable-mskermit \
