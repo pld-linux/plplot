@@ -1,0 +1,13 @@
+--- plplot-5.3.1/cf/linuxvga.ac.orig	2005-01-09 23:02:24.056470920 +0100
++++ plplot-5.3.1/cf/linuxvga.ac	2005-01-09 23:02:32.682522248 +0100
+@@ -25,8 +25,8 @@
+ if test "$enable_linuxvga" = "yes"; then
+     if test -z "$VGALIBDIR"; then
+         libdirs="\
+-        $prefix/lib \
+-        /usr/lib"
++        $prefix/lib64 \
++        /usr/lib64"
+ 
+         PL_FIND_LIB(vga, VGALIBDIR, VGALIBSTR, enable_linuxvga)
+     fi
