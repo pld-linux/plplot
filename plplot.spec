@@ -32,7 +32,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	octave-devel
 BuildRequires:	perl-XML-Parser
-BuildRequires:	python-devel >= 2.3
+BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-numpy-devel
 BuildRequires:	qhull-devel
 BuildRequires:	rpm-pythonprov
