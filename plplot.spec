@@ -8,17 +8,15 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.3.0
-Release:	2
+Version:	5.3.1
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	38ea3512dbbbd9dd98e1683931f32e2a
-Patch0:		%{name}-am18.patch
-Patch1:		%{name}-conflict.patch
+# Source0-md5:	3487a6b2a78a064188a80f244b341d33
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.8.3
 BuildRequires:	cd-devel >= 1.3-2
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	freetype-devel >= 2.1.0
@@ -384,13 +382,11 @@ Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 cp -f /usr/share/automake/config.* libltdl
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I cf
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -402,9 +398,23 @@ cp -f /usr/share/automake/config.* libltdl
 	ITCLLIBDIR="%{_ulibdir}" \
 	ITKLIBDIR="%{_ulibdir}" \
 	%{!?with_svga:--disable-linuxvga} \
+	--enable-conex \
+	--enable-dg300 \
 	%{?with_gnome:--enable-gnome} \
+	--enable-imp \
 	%{?with_java:JAVA_HOME=/usr/%{_lib}/java --enable-java} \
+	--enable-ljii \
+	--enable-ljiip \
+	--enable-mskermit \
+	--enable-ntk \
 	--enable-octave \
+	--enable-tek4010 \
+	--enable-tek4010f \
+	--enable-tek4107 \
+	--enable-tek4107f \
+	--enable-versaterm \
+	--enable-vlt \
+	--enable-xterm \
 	--with-pkg-config \
 	--with-pthreads
 
@@ -444,7 +454,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGES ChangeLog Copyright FAQ NEWS PROBLEMS README SERVICE TODO* ToDo
+%doc AUTHORS ChangeLog Copyright FAQ NEWS PROBLEMS README SERVICE TODO* ToDo
 %doc installed-docs/{README.1st.csa,README.1st.nn,README.csa,README.nn,README.drivers}
 %attr(755,root,root) %{_bindir}/plm2gif
 %attr(755,root,root) %{_bindir}/plpr
@@ -597,11 +607,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files f77
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotf77cd.so.*.*.*
 %attr(755,root,root) %{_libdir}/libplplotf77d.so.*.*.*
 
 %files f77-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotf77cd.so
 %attr(755,root,root) %{_libdir}/libplplotf77d.so
+%{_libdir}/libplplotf77cd.la
 %{_libdir}/libplplotf77d.la
 %{_pkgconfigdir}/plplotd-f77.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f77.sh
@@ -609,6 +622,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files f77-static
 %defattr(644,root,root,755)
+%{_libdir}/libplplotf77cd.a
 %{_libdir}/libplplotf77d.a
 
 %if %{with java}
@@ -634,8 +648,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
-%dir %{_datadir}/plplot%{version}
-%{_datadir}/plplot%{version}/tcl
 %{_mandir}/man1/pltcl.1*
 %{_mandir}/man1/plserver.1*
 
