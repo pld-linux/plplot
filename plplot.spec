@@ -13,6 +13,7 @@ License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	3487a6b2a78a064188a80f244b341d33
+Patch0:		%{name}-FHS.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.8.3
@@ -382,6 +383,7 @@ Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.* libltdl
@@ -392,7 +394,7 @@ cp -f /usr/share/automake/config.* libltdl
 %{__automake}
 %configure \
 	DATA_DIR="%{_libdir}/%{name}%{version}/data" \
-	PYTHON_INC_DIR=/usr/include/python2.3 \
+	PYTHON_INC_DIR=/usr/include/python%{py_ver} \
 	TCLLIBDIR="%{_ulibdir}" \
 	TKLIBDIR="%{_ulibdir}" \
 	ITCLLIBDIR="%{_ulibdir}" \
