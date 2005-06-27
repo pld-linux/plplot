@@ -20,6 +20,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.8.3
 BuildRequires:	cd-devel >= 1.3-2
 BuildRequires:	docbook-style-dsssl
+BuildRequires:	fftw3-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
 BuildRequires:	gd-devel
@@ -28,6 +29,7 @@ BuildRequires:	gd-devel
 BuildRequires:	itcl-devel
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
+BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
