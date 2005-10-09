@@ -8,7 +8,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.3.1
-Release:	5
+Release:	6
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -42,7 +42,7 @@ BuildRequires:	qhull-devel
 %{?with_svga:BuildRequires:	svgalib-devel}
 # checked for but not used (generated files included in sources)
 #BuildRequires:	swig
-BuildRequires:	tcl-devel
+BuildRequires:	tcl-devel >= 8.4.11-3
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
@@ -390,6 +390,9 @@ Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
 %patch1 -p1
 %endif
 
+sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
+	cf/tcl.ac
+
 %build
 cp -f /usr/share/automake/config.* libltdl
 %{__libtoolize}
@@ -400,6 +403,7 @@ cp -f /usr/share/automake/config.* libltdl
 %configure \
 	DATA_DIR="%{_libdir}/%{name}%{version}/data" \
 	PYTHON_INC_DIR=/usr/include/python%{py_ver} \
+	TCLINCDIR="%{_includedir}/tcl-private/generic" \
 	TCLLIBDIR="%{_ulibdir}" \
 	TKLIBDIR="%{_ulibdir}" \
 	ITCLLIBDIR="%{_ulibdir}" \
