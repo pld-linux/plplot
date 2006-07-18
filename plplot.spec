@@ -36,8 +36,8 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	octave-devel
 BuildRequires:	perl-XML-Parser
+BuildRequires:	python-Numeric-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	python-numpy-devel
 BuildRequires:	qhull-devel
 BuildRequires:	sed >= 4.0
 %{?with_svga:BuildRequires:	svgalib-devel}
@@ -364,6 +364,7 @@ Summary(pl):	Biblioteka PLplot - wi±zanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
+Requires:	python-Numeric
 
 %description -n python-plplot
 PLplot library - Python binding.
