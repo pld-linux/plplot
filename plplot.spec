@@ -5,7 +5,7 @@
 %bcond_without	svga		# don't build linuxvga driver
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
-Summary(pl):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
+Summary(pl.UTF-8):   PLplot - biblioteka funkcji przydatnych do tworzenia wykresÃ³w naukowych
 Name:		plplot
 Version:	5.3.1
 Release:	6
@@ -69,105 +69,105 @@ tk, xterm and Tektronics devices are supported. New devices can
 be easily added by writing a small number of device dependent
 routines.
 
-%description -l pl
-PLplot to biblioteka funkcji przydatnych do tworzenia wykresów
-naukowych. Mo¿e byæ u¿ywana z poziomu jêzyków kompilowanych takich
-jak C, C++, FORTRAN czy Java, albo interaktywnie z poziomu jêzyków
+%description -l pl.UTF-8
+PLplot to biblioteka funkcji przydatnych do tworzenia wykresÃ³w
+naukowych. MoÅ¼e byÄ‡ uÅ¼ywana z poziomu jÄ™zykÃ³w kompilowanych takich
+jak C, C++, FORTRAN czy Java, albo interaktywnie z poziomu jÄ™zykÃ³w
 interpretowanych takich jak Octave, Python, Perl czy Tcl.
 
-Bibliotekê PLplot mo¿na wykorzystaæ do tworzenia standardowych
-wykresów X-Y, wykresów pó³logarytmicznych, wykresów konturowych,
-wykresów powierzchni trójwymiarowych, wykresów siatek, wykresów
-s³upkowych i ko³owych. Na jednej stronie mo¿na umie¶ciæ wiele wykresów
-(o tych samych lub ró¿nych rozmiarach), na jednym wykresie mo¿e byæ
+BibliotekÄ™ PLplot moÅ¼na wykorzystaÄ‡ do tworzenia standardowych
+wykresÃ³w X-Y, wykresÃ³w pÃ³Å‚logarytmicznych, wykresÃ³w konturowych,
+wykresÃ³w powierzchni trÃ³jwymiarowych, wykresÃ³w siatek, wykresÃ³w
+sÅ‚upkowych i koÅ‚owych. Na jednej stronie moÅ¼na umieÅ›ciÄ‡ wiele wykresÃ³w
+(o tych samych lub rÃ³Å¼nych rozmiarach), na jednym wykresie moÅ¼e byÄ‡
 wiele linii.
 
-Obs³ugiwanych jest wiele urz±dzeñ wyj¶ciowych, w tym PostScript, PNG,
-JPEG, LaTeX i inne, a tak¿e urz±dzenia interaktywne, takie jak xwin,
-tk, xterm i Tektronics. Nowe urz±dzenia mo¿na ³atwo dodaæ pisz±c parê
-zale¿nych od urz±dzenia funkcji.
+ObsÅ‚ugiwanych jest wiele urzÄ…dzeÅ„ wyjÅ›ciowych, w tym PostScript, PNG,
+JPEG, LaTeX i inne, a takÅ¼e urzÄ…dzenia interaktywne, takie jak xwin,
+tk, xterm i Tektronics. Nowe urzÄ…dzenia moÅ¼na Å‚atwo dodaÄ‡ piszÄ…c parÄ™
+zaleÅ¼nych od urzÄ…dzenia funkcji.
 
 %package driver-gd
 Summary:	GD driver for PLplot library
-Summary(pl):	Sterownik GD dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterownik GD dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-gd
 GD driver for PLplot library. It supports JPEG and PNG output formats.
 
-%description driver-gd -l pl
-Sterownik GD dla biblioteki PLplot. Obs³uguje formaty wyj¶cia JPEG i
+%description driver-gd -l pl.UTF-8
+Sterownik GD dla biblioteki PLplot. ObsÅ‚uguje formaty wyjÅ›cia JPEG i
 PNG.
 
 %package driver-linuxvga
 Summary:	linuxvga driver for PLplot library
-Summary(pl):	Sterownik linuxvga dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterownik linuxvga dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-linuxvga
 linuxvga driver for PLplot library. It supports svgalib output.
 
-%description driver-gd -l pl
-Sterownik linuxvga dla biblioteki PLplot. Obs³uguje wyj¶cie poprzez
+%description driver-gd -l pl.UTF-8
+Sterownik linuxvga dla biblioteki PLplot. ObsÅ‚uguje wyjÅ›cie poprzez
 svgalib.
 
 %package driver-gnome
 Summary:	GNOME driver for PLplot library
-Summary(pl):	Sterownik GNOME dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterownik GNOME dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-gnome
 GNOME driver for PLplot library. It supports GnomeCanvas output.
 
-%description driver-gnome -l pl
-Sterownik GNOME dla biblioteki PLplot. Obs³uguje wyj¶cie do widgetu
+%description driver-gnome -l pl.UTF-8
+Sterownik GNOME dla biblioteki PLplot. ObsÅ‚uguje wyjÅ›cie do widgetu
 GnomeCanvas.
 
 %package driver-ntk
 Summary:	ntk driver for PLplot library
-Summary(pl):	Sterownik ntk dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterownik ntk dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-ntk
 ntk (new tk) driver for PLplot library. It supports Tcl/Tk output.
 
-%description driver-ntk -l pl
-Sterownik ntk (new tk) dla biblioteki PLplot. Obs³uguje wyj¶cie
+%description driver-ntk -l pl.UTF-8
+Sterownik ntk (new tk) dla biblioteki PLplot. ObsÅ‚uguje wyjÅ›cie
 poprzez Tcl/Tk.
 
 %package driver-tk
 Summary:	Tk drivers for PLplot library
-Summary(pl):	Sterowniki Tk dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterowniki Tk dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name}-tcl = %{version}-%{release}
 
 %description driver-tk
 Tk and tkwin drivers for PLplot library. They support Tcl/Tk output.
 
-%description driver-ntk -l pl
-Sterownik Tk i tkwin dla biblioteki PLplot. Obs³uguj± wyj¶cie poprzez
+%description driver-ntk -l pl.UTF-8
+Sterownik Tk i tkwin dla biblioteki PLplot. ObsÅ‚ugujÄ… wyjÅ›cie poprzez
 Tcl/Tk.
 
 %package driver-xwin
 Summary:	xwin driver for PLplot library
-Summary(pl):	Sterownik xwin dla biblioteki PLplot
+Summary(pl.UTF-8):   Sterownik xwin dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-xwin
 xwin driver for PLplot library. It supports X Window System output.
 
-%description driver-xwin -l pl
-Sterownik ntk (new tk) dla biblioteki PLplot. Obs³uguje wyj¶cie do
+%description driver-xwin -l pl.UTF-8
+Sterownik ntk (new tk) dla biblioteki PLplot. ObsÅ‚uguje wyjÅ›cie do
 okna systemu X Window.
 
 %package devel
 Summary:	Header files for PLplot library
-Summary(pl):	Pliki nag³ówkowe biblioteki PLplot
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe biblioteki PLplot
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 2.1
@@ -176,36 +176,36 @@ Requires:	qhull-devel
 %description devel
 Header files for PLplot library.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki PLplot.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki PLplot.
 
 %package static
 Summary:	Static PLplot library
-Summary(pl):	Statyczna biblioteka PLplot
+Summary(pl.UTF-8):   Statyczna biblioteka PLplot
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static PLplot library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka PLplot.
 
 %package c++
 Summary:	PLplot library - C++ binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla C++
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla C++
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description c++
 PLplot library - C++ binding.
 
-%description c++ -l pl
-Biblioteka PLplot - wi±zanie dla C++.
+%description c++ -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla C++.
 
 %package c++-devel
 Summary:	PLplot library - C++ binding development files
-Summary(pl):	Biblioteka PLplot - pliki programistyczne wi±zania dla C++
+Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiÄ…zania dla C++
 Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
@@ -214,36 +214,36 @@ Requires:	libstdc++-devel
 %description c++-devel
 PLplot library - C++ binding development files.
 
-%description c++-devel -l pl
-Biblioteka PLplot - pliki programistyczne wi±zania dla C++.
+%description c++-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiÄ…zania dla C++.
 
 %package c++-static
 Summary:	PLplot library - C++ binding static library
-Summary(pl):	Biblioteka PLplot - biblioteka statyczna wi±zania dla C++
+Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla C++
 Group:		Development/Libraries
 Requires:	%{name}-c++-devel = %{version}-%{release}
 
 %description c++-static
 PLplot library - C++ binding static library.
 
-%description c++-static -l pl
-Biblioteka PLplot - biblioteka statyczna wi±zania dla C++.
+%description c++-static -l pl.UTF-8
+Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla C++.
 
 %package f77
 Summary:	PLplot library - FORTRAN 77 binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla jêzyka FORTRAN 77
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla jÄ™zyka FORTRAN 77
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description f77
 PLplot library - FORTRAN 77 binding.
 
-%description f77 -l pl
-Biblioteka PLplot - wi±zanie dla jêzyka FORTRAN 77.
+%description f77 -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla jÄ™zyka FORTRAN 77.
 
 %package f77-devel
 Summary:	PLplot library - FORTRAN 77 binding development files
-Summary(pl):	Biblioteka PLplot - pliki programistyczne wi±zania dla jêzyka FORTRAN 77
+Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiÄ…zania dla jÄ™zyka FORTRAN 77
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-f77 = %{version}-%{release}
@@ -252,38 +252,38 @@ Requires:	gcc-g77
 %description f77-devel
 PLplot library - FORTRAN 77 binding development files.
 
-%description f77-devel -l pl
-Biblioteka PLplot - pliki programistyczne wi±zania dla jêzyka FORTRAN
+%description f77-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiÄ…zania dla jÄ™zyka FORTRAN
 77.
 
 %package f77-static
 Summary:	PLplot library - FORTRAN 77 binding static library
-Summary(pl):	Biblioteka PLplot - biblioteka statyczna wi±zania dla jêzyka FORTRAN 77
+Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla jÄ™zyka FORTRAN 77
 Group:		Development/Libraries
 Requires:	%{name}-f77-devel = %{version}-%{release}
 
 %description f77-static
 PLplot library - FORTRAN 77 binding static library.
 
-%description f77-static -l pl
-Biblioteka PLplot - biblioteka statyczna wi±zania dla jêzyka FORTRAN
+%description f77-static -l pl.UTF-8
+Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla jÄ™zyka FORTRAN
 77.
 
 %package java
 Summary:	PLplot library - Java binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla Javy
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla Javy
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description java
 PLplot library - Java binding.
 
-%description java -l pl
-Biblioteka PLplot - wi±zanie dla Javy.
+%description java -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla Javy.
 
 %package java-devel
 Summary:	PLplot library - Java binding development files
-Summary(pl):	Biblioteka PLplot - pliki programistyczne wi±zania dla Javy
+Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiÄ…zania dla Javy
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-java = %{version}-%{release}
@@ -292,24 +292,24 @@ Obsoletes:	plplot-java-static
 %description java-devel
 PLplot library - Java binding development files.
 
-%description java -l pl
-Biblioteka PLplot - pliki programistyczne wi±zania dla Javy.
+%description java -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiÄ…zania dla Javy.
 
 %package tcl
 Summary:	PLplot library - Tcl/Tk binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla Tcl/Tk
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla Tcl/Tk
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description tcl
 PLplot library - Tcl/Tk binding.
 
-%description tcl -l pl
-Biblioteka PLplot - wi±zanie dla Tcl/Tk.
+%description tcl -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla Tcl/Tk.
 
 %package tcl-devel
 Summary:	PLplot library - Tcl/Tk binding development files
-Summary(pl):	Biblioteka PLplot - pliki programistyczne wi±zania dla Tcl/Tk
+Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiÄ…zania dla Tcl/Tk
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
@@ -318,36 +318,36 @@ Requires:	itcl-devel
 %description tcl-devel
 PLplot library - Tcl/Tk binding development files.
 
-%description tcl-devel -l pl
-Biblioteka PLplot - pliki programistyczne wi±zania dla Tcl/Tk.
+%description tcl-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiÄ…zania dla Tcl/Tk.
 
 %package tcl-static
 Summary:	PLplot library - Tcl/Tk binding static library
-Summary(pl):	Biblioteka PLplot - biblioteka statyczna wi±zania dla Tcl/Tk
+Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla Tcl/Tk
 Group:		Development/Libraries
 Requires:	%{name}-tcl-devel = %{version}-%{release}
 
 %description tcl-static
 PLplot library - Tcl/Tk binding static library.
 
-%description tcl-static -l pl
-Biblioteka PLplot - biblioteka statyczna wi±zania dla Tcl/Tk.
+%description tcl-static -l pl.UTF-8
+Biblioteka PLplot - biblioteka statyczna wiÄ…zania dla Tcl/Tk.
 
 %package octave
 Summary:	PLplot library - Octave binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla jêzyka Octave
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla jÄ™zyka Octave
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description octave
 PLplot library - Octave binding.
 
-%description octave -l pl
-Biblioteka PLplot - wi±zanie dla jêzyka Octave.
+%description octave -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla jÄ™zyka Octave.
 
 %package octave-examples
 Summary:	PLplot library - examples for Octave binding
-Summary(pl):	Biblioteka PLplot - przyk³ady do wi±zania dla jêzyka Octave
+Summary(pl.UTF-8):   Biblioteka PLplot - przykÅ‚ady do wiÄ…zania dla jÄ™zyka Octave
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-octave = %{version}-%{release}
@@ -355,12 +355,12 @@ Requires:	%{name}-octave = %{version}-%{release}
 %description octave-examples
 PLplot library - examples for Octave binding.
 
-%description octave-examples -l pl
-Biblioteka PLplot - przyk³ady do wi±zania dla jêzyka Octave.
+%description octave-examples -l pl.UTF-8
+Biblioteka PLplot - przykÅ‚ady do wiÄ…zania dla jÄ™zyka Octave.
 
 %package -n python-plplot
 Summary:	PLplot library - Python binding
-Summary(pl):	Biblioteka PLplot - wi±zanie dla Pythona
+Summary(pl.UTF-8):   Biblioteka PLplot - wiÄ…zanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
@@ -369,12 +369,12 @@ Requires:	python-Numeric
 %description -n python-plplot
 PLplot library - Python binding.
 
-%description -n python-plplot -l pl
-Biblioteka PLplot - wi±zanie dla Pythona.
+%description -n python-plplot -l pl.UTF-8
+Biblioteka PLplot - wiÄ…zanie dla Pythona.
 
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
-Summary(pl):	Biblioteka PLplot - przyk³ady do wi±zania dla Pythona
+Summary(pl.UTF-8):   Biblioteka PLplot - przykÅ‚ady do wiÄ…zania dla Pythona
 Group:		Libraries/Python
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	python-plplot = %{version}-%{release}
@@ -382,8 +382,8 @@ Requires:	python-plplot = %{version}-%{release}
 %description -n python-plplot-examples
 PLplot library - Python binding examples.
 
-%description -n python-plplot-examples -l pl
-Biblioteka PLplot - przyk³ady do wi±zania dla Pythona.
+%description -n python-plplot-examples -l pl.UTF-8
+Biblioteka PLplot - przykÅ‚ady do wiÄ…zania dla Pythona.
 
 %prep
 %setup -q
