@@ -5,7 +5,7 @@
 %bcond_without	svga		# don't build linuxvga driver
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
-Summary(pl.UTF-8):   PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
+Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.3.1
 Release:	6
@@ -89,7 +89,7 @@ zależnych od urządzenia funkcji.
 
 %package driver-gd
 Summary:	GD driver for PLplot library
-Summary(pl.UTF-8):   Sterownik GD dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterownik GD dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -102,7 +102,7 @@ PNG.
 
 %package driver-linuxvga
 Summary:	linuxvga driver for PLplot library
-Summary(pl.UTF-8):   Sterownik linuxvga dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterownik linuxvga dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -115,7 +115,7 @@ svgalib.
 
 %package driver-gnome
 Summary:	GNOME driver for PLplot library
-Summary(pl.UTF-8):   Sterownik GNOME dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterownik GNOME dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -128,7 +128,7 @@ GnomeCanvas.
 
 %package driver-ntk
 Summary:	ntk driver for PLplot library
-Summary(pl.UTF-8):   Sterownik ntk dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterownik ntk dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -141,7 +141,7 @@ poprzez Tcl/Tk.
 
 %package driver-tk
 Summary:	Tk drivers for PLplot library
-Summary(pl.UTF-8):   Sterowniki Tk dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterowniki Tk dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name}-tcl = %{version}-%{release}
 
@@ -154,7 +154,7 @@ Tcl/Tk.
 
 %package driver-xwin
 Summary:	xwin driver for PLplot library
-Summary(pl.UTF-8):   Sterownik xwin dla biblioteki PLplot
+Summary(pl.UTF-8):	Sterownik xwin dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -167,7 +167,7 @@ okna systemu X Window.
 
 %package devel
 Summary:	Header files for PLplot library
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki PLplot
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PLplot
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 2.1
@@ -181,7 +181,7 @@ Pliki nagłówkowe biblioteki PLplot.
 
 %package static
 Summary:	Static PLplot library
-Summary(pl.UTF-8):   Statyczna biblioteka PLplot
+Summary(pl.UTF-8):	Statyczna biblioteka PLplot
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -193,7 +193,7 @@ Statyczna biblioteka PLplot.
 
 %package c++
 Summary:	PLplot library - C++ binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla C++
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla C++
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -205,7 +205,7 @@ Biblioteka PLplot - wiązanie dla C++.
 
 %package c++-devel
 Summary:	PLplot library - C++ binding development files
-Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiązania dla C++
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla C++
 Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
@@ -219,7 +219,7 @@ Biblioteka PLplot - pliki programistyczne wiązania dla C++.
 
 %package c++-static
 Summary:	PLplot library - C++ binding static library
-Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiązania dla C++
+Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla C++
 Group:		Development/Libraries
 Requires:	%{name}-c++-devel = %{version}-%{release}
 
@@ -231,7 +231,7 @@ Biblioteka PLplot - biblioteka statyczna wiązania dla C++.
 
 %package f77
 Summary:	PLplot library - FORTRAN 77 binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla języka FORTRAN 77
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka FORTRAN 77
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -243,7 +243,7 @@ Biblioteka PLplot - wiązanie dla języka FORTRAN 77.
 
 %package f77-devel
 Summary:	PLplot library - FORTRAN 77 binding development files
-Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 77
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 77
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-f77 = %{version}-%{release}
@@ -258,7 +258,7 @@ Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN
 
 %package f77-static
 Summary:	PLplot library - FORTRAN 77 binding static library
-Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiązania dla języka FORTRAN 77
+Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla języka FORTRAN 77
 Group:		Development/Libraries
 Requires:	%{name}-f77-devel = %{version}-%{release}
 
@@ -271,7 +271,7 @@ Biblioteka PLplot - biblioteka statyczna wiązania dla języka FORTRAN
 
 %package java
 Summary:	PLplot library - Java binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla Javy
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Javy
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -283,7 +283,7 @@ Biblioteka PLplot - wiązanie dla Javy.
 
 %package java-devel
 Summary:	PLplot library - Java binding development files
-Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiązania dla Javy
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Javy
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-java = %{version}-%{release}
@@ -297,7 +297,7 @@ Biblioteka PLplot - pliki programistyczne wiązania dla Javy.
 
 %package tcl
 Summary:	PLplot library - Tcl/Tk binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla Tcl/Tk
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Tcl/Tk
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -309,7 +309,7 @@ Biblioteka PLplot - wiązanie dla Tcl/Tk.
 
 %package tcl-devel
 Summary:	PLplot library - Tcl/Tk binding development files
-Summary(pl.UTF-8):   Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/Tk
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/Tk
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
@@ -323,7 +323,7 @@ Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/Tk.
 
 %package tcl-static
 Summary:	PLplot library - Tcl/Tk binding static library
-Summary(pl.UTF-8):   Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk
+Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk
 Group:		Development/Libraries
 Requires:	%{name}-tcl-devel = %{version}-%{release}
 
@@ -335,7 +335,7 @@ Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk.
 
 %package octave
 Summary:	PLplot library - Octave binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla języka Octave
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka Octave
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -347,7 +347,7 @@ Biblioteka PLplot - wiązanie dla języka Octave.
 
 %package octave-examples
 Summary:	PLplot library - examples for Octave binding
-Summary(pl.UTF-8):   Biblioteka PLplot - przykłady do wiązania dla języka Octave
+Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla języka Octave
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-octave = %{version}-%{release}
@@ -360,7 +360,7 @@ Biblioteka PLplot - przykłady do wiązania dla języka Octave.
 
 %package -n python-plplot
 Summary:	PLplot library - Python binding
-Summary(pl.UTF-8):   Biblioteka PLplot - wiązanie dla Pythona
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
@@ -374,7 +374,7 @@ Biblioteka PLplot - wiązanie dla Pythona.
 
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
-Summary(pl.UTF-8):   Biblioteka PLplot - przykłady do wiązania dla Pythona
+Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla Pythona
 Group:		Libraries/Python
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	python-plplot = %{version}-%{release}
