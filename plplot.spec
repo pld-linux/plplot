@@ -63,16 +63,15 @@ charts and pie charts. Multiple graphs (of the same or different
 sizes) may be placed on a single page with multiple lines in each
 graph.
 
-A variety of output file devices such as PostScript, PNG, JPEG,
-LaTeX and others, as well as interactive devices such as xwin,
-tk, xterm and Tektronics devices are supported. New devices can
-be easily added by writing a small number of device dependent
-routines.
+A variety of output file devices such as PostScript, PNG, JPEG, LaTeX
+and others, as well as interactive devices such as xwin, tk, xterm and
+Tektronics devices are supported. New devices can be easily added by
+writing a small number of device dependent routines.
 
 %description -l pl.UTF-8
 PLplot to biblioteka funkcji przydatnych do tworzenia wykresów
-naukowych. Może być używana z poziomu języków kompilowanych takich
-jak C, C++, FORTRAN czy Java, albo interaktywnie z poziomu języków
+naukowych. Może być używana z poziomu języków kompilowanych takich jak
+C, C++, FORTRAN czy Java, albo interaktywnie z poziomu języków
 interpretowanych takich jak Octave, Python, Perl czy Tcl.
 
 Bibliotekę PLplot można wykorzystać do tworzenia standardowych
@@ -476,8 +475,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltek
 %attr(755,root,root) %{_bindir}/pstex2eps
 %attr(755,root,root) %{_libdir}/libcsirocsa.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcsirocsa.so.0
 %attr(755,root,root) %{_libdir}/libcsironn.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcsironn.so.0
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.9
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
@@ -606,6 +608,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.9
 
 %files c++-devel
 %defattr(644,root,root,755)
@@ -622,7 +625,9 @@ rm -rf $RPM_BUILD_ROOT
 %files f77
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf77cd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotf77cd.so.9
 %attr(755,root,root) %{_libdir}/libplplotf77d.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotf77d.so.9
 
 %files f77-devel
 %defattr(644,root,root,755)
@@ -661,7 +666,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.9
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
 %{_mandir}/man1/pltcl.1*
 %{_mandir}/man1/plserver.1*
 
