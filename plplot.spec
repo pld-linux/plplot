@@ -8,7 +8,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.3.1
-Release:	6
+Release:	7
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -24,7 +24,7 @@ BuildRequires:	fftw3-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
 BuildRequires:	gd-devel
-%{?with_gnome:BuildRequires:	gnome-libs-devel}
+%{?with_gnome:BuildRequires:	gnome-libs-devel >= 1:1.4.2-14}
 %{?with_gnome:BuildRequires:	gtk+-devel >= 1.2.7}
 BuildRequires:	itcl-devel
 BuildRequires:	jadetex
@@ -431,7 +431,7 @@ cp -f /usr/share/automake/config.* libltdl
 	--with-pkg-config \
 	--with-pthreads
 
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
