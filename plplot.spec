@@ -1,20 +1,24 @@
 #
 # Conditional build:
 %bcond_without	gnome		# don't build gnome driver
+%bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_with	java		# build Java binding
 %bcond_without	svga		# don't build linuxvga driver
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.3.1
-Release:	8
+Version:	5.8.0
+Release:	0.1
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	3487a6b2a78a064188a80f244b341d33
+# Source0-md5:	63e954448b12056aeecf2b53cd97f1f5
 Patch0:		%{name}-FHS.patch
 Patch1:		%{name}-lib64.patch
+Patch2:		%{name}-tk.patch
+Patch3:		%{name}-tcl.patch
+Patch4:		%{name}-octave3.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.8.3
@@ -24,8 +28,10 @@ BuildRequires:	fftw3-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
 BuildRequires:	gd-devel
-%{?with_gnome:BuildRequires:	gnome-libs-devel >= 1:1.4.2-14}
-%{?with_gnome:BuildRequires:	gtk+-devel >= 1.2.7}
+%{?with_gnome:BuildRequires:	libgnomeui-devel}
+%{?with_gnome:BuildRequires:	libgnomeprintui-devel}
+%{?with_gnome:BuildRequires:	libgnomecanvas-devel}
+%{?with_gnome:BuildRequires:	python-gnome-devel}
 BuildRequires:	itcl-devel
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
@@ -35,14 +41,16 @@ BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	octave-devel
+BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	perl-XML-Parser
+BuildRequires:	perl-XML-DOM
 BuildRequires:	python-Numeric-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
+BuildRequires:	python-pygtk-devel >= 2.12.1
 BuildRequires:	qhull-devel
 BuildRequires:	sed >= 4.0
 %{?with_svga:BuildRequires:	svgalib-devel}
-# checked for but not used (generated files included in sources)
-#BuildRequires:	swig
+BuildRequires:	swig
 BuildRequires:	tcl-devel >= 8.4.11-3
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
@@ -390,9 +398,14 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %if "%{_lib}" == "lib64"
 %patch1 -p1
 %endif
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
 	cf/tcl.ac
+
+cp -f bindings/python/plplot.py.Numeric bindings/python/plplot.py
 
 %build
 cp -f /usr/share/automake/config.* libltdl
@@ -410,9 +423,9 @@ cp -f /usr/share/automake/config.* libltdl
 	ITCLLIBDIR="%{_ulibdir}" \
 	ITKLIBDIR="%{_ulibdir}" \
 	%{!?with_svga:--disable-linuxvga} \
+	%{!?with_perl_pdl:--enable-pdl} \
 	--enable-conex \
 	--enable-dg300 \
-	%{?with_gnome:--enable-gnome} \
 	--enable-imp \
 	%{?with_java:JAVA_HOME=/usr/%{_lib}/java} \
 	%{!?with_java:--disable-java} \
@@ -435,14 +448,17 @@ cp -f /usr/share/automake/config.* libltdl
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_examplesdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_examplesdir}
 mv -f $RPM_BUILD_ROOT%{_libdir}/plplot%{version}/data/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
+rm -rf installed-docs
 mv -f $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
+
 %if %{with java}
 # java must stay in libdir - JNI wrapper included
 mv -f $RPM_BUILD_ROOT%{_libdir}/java/plplot/examples \
@@ -479,7 +495,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libcsironn.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcsironn.so.0
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.11
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
@@ -522,9 +538,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ps.so
 %{_libdir}/plplot%{version}/driversd/ps.la
 %{_libdir}/plplot%{version}/driversd/ps.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
-%{_libdir}/plplot%{version}/driversd/pstex.la
-%{_libdir}/plplot%{version}/driversd/pstex.rc
+#%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
+#%{_libdir}/plplot%{version}/driversd/pstex.la
+#%{_libdir}/plplot%{version}/driversd/pstex.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tek.so
 %{_libdir}/plplot%{version}/driversd/tek.la
 %{_libdir}/plplot%{version}/driversd/tek.rc
@@ -541,9 +557,9 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with gnome}
 %files driver-gnome
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/gnome.so
-%{_libdir}/plplot%{version}/driversd/gnome.la
-%{_libdir}/plplot%{version}/driversd/gnome.rc
+%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/gcw.so
+%{_libdir}/plplot%{version}/driversd/gcw.la
+%{_libdir}/plplot%{version}/driversd/gcw.rc
 %endif
 
 %if %{with svga}
@@ -596,8 +612,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
 %{_examplesdir}/%{name}-%{version}/Makefile
 %{_examplesdir}/%{name}-%{version}/c
+%if %{with perl_pdl}
 # perl examples use PDL::Graphics::PLplot module found in perl-PDL
 %{_examplesdir}/%{name}-%{version}/perl
+%endif
 
 %files static
 %defattr(644,root,root,755)
@@ -666,9 +684,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.11
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.11
 %{_mandir}/man1/pltcl.1*
 %{_mandir}/man1/plserver.1*
 
