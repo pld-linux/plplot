@@ -1,0 +1,36 @@
+--- plplot-5.8.0/cf/octave.ac~	2008-04-03 19:19:20.000000000 +0200
++++ plplot-5.8.0/cf/octave.ac	2008-04-03 19:35:38.000000000 +0200
+@@ -84,6 +84,7 @@
+ 	# Get Configuration default values for Octave
+         AC_MSG_CHECKING([Octave prefix])
+         PL_OCTAVE_CONFIG_INFO(OCTAVE_PREFIX, prefix)
++        OCTAVE_PREFIX=`echo $OCTAVE_PREFIX | sed 's|^[[^/]]\+/|/|'`
+         AC_MSG_RESULT($OCTAVE_PREFIX)
+ 
+         AC_MSG_CHECKING([Octave m dir])
+--- plplot-5.8.0/cf/octave.ac~	2007-11-18 21:04:07.000000000 +0100
++++ plplot-5.8.0/cf/octave.ac	2008-04-03 19:11:21.000000000 +0200
+@@ -87,7 +87,10 @@
+         AC_MSG_RESULT($OCTAVE_PREFIX)
+ 
+         AC_MSG_CHECKING([Octave m dir])
+-	if test -n "`echo $OCTAVE_VERSION | sed 's/^2.1//p;d;q'`" ; then
++	if test -n "`echo $OCTAVE_VERSION | sed 's/^3.0//p;d;q'`" ; then
++            # Octave version 3.0
++            PL_OCTAVE_CONFIG_INFO(OCTAVE_M_DIR, localfcnfiledir)
++        elif test -n "`echo $OCTAVE_VERSION | sed 's/^2.1//p;d;q'`" ; then
+             # Octave version 2.1
+             PL_OCTAVE_CONFIG_INFO(OCTAVE_M_DIR, localfcnfiledir)
+         else
+@@ -106,7 +109,10 @@
+         AC_MSG_RESULT($OCTAVE_M_DIR)
+ 
+         AC_MSG_CHECKING([Octave oct dir])
+-	if test -n "`echo $OCTAVE_VERSION | sed 's/^2.1//p;d;q'`" ; then
++	if test -n "`echo $OCTAVE_VERSION | sed 's/^3.0//p;d;q'`" ; then
++            # Octave version 3.0
++            PL_OCTAVE_CONFIG_INFO(OCTAVE_OCT_DIR, localoctfiledir)
++        elif test -n "`echo $OCTAVE_VERSION | sed 's/^2.1//p;d;q'`" ; then
+             # Octave version 2.1
+             PL_OCTAVE_CONFIG_INFO(OCTAVE_OCT_DIR, localoctfiledir)
+         else
