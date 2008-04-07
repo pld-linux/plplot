@@ -9,7 +9,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.8.0
-Release:	0.1
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -19,6 +19,7 @@ Patch1:		%{name}-lib64.patch
 Patch2:		%{name}-tk.patch
 Patch3:		%{name}-tcl.patch
 Patch4:		%{name}-octave3.patch
+Patch5:		%{name}-gnome-python.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.8.3
@@ -340,6 +341,43 @@ PLplot library - Tcl/Tk binding static library.
 %description tcl-static -l pl.UTF-8
 Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk.
 
+%package gnome
+Summary:	PLplot library - GNOME binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla GNOME
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description gnome
+PLplot library - GNOME binding.
+
+%description gnome -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla GNOME.
+
+%package gnome-devel
+Summary:	PLplot library - GNOME binding development files
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla GNOME
+Group:		Development/Libraries
+Requires:	%{name}-gnome = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description gnome-devel
+PLplot library - GNOME binding development files.
+
+%description gnome-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiązania dla GNOME.
+
+%package gnome-static
+Summary:	PLplot library - GNOME binding static library
+Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla GNOME
+Group:		Development/Libraries
+Requires:	%{name}-gnome-devel = %{version}-%{release}
+
+%description gnome-static
+PLplot library - GNOME binding static library.
+
+%description gnome-static -l pl.UTF-8
+Biblioteka PLplot - biblioteka statyczna wiązania dla GNOME.
+
 %package octave
 Summary:	PLplot library - Octave binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka Octave
@@ -379,6 +417,19 @@ PLplot library - Python binding.
 %description -n python-plplot -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Pythona.
 
+%package -n python-plplot-gnome
+Summary:	PLplot library - Python GNOME binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona GNOME
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+%pyrequires_eq	python-libs
+
+%description -n python-plplot-gnome
+PLplot library - Python GNOME binding.
+
+%description -n python-plplot-gnome -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla Pythona GNOME.
+
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
 Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla Pythona
@@ -401,6 +452,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
 	cf/tcl.ac
@@ -560,6 +612,27 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/gcw.so
 %{_libdir}/plplot%{version}/driversd/gcw.la
 %{_libdir}/plplot%{version}/driversd/gcw.rc
+
+%files gnome
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotgnome2d.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotgnome2d.so.0
+
+%files gnome-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotgnome2d.so
+%{_libdir}/libplplotgnome2d.la
+%{_pkgconfigdir}/plplotd-gnome2.pc
+
+%files gnome-static
+%defattr(644,root,root,755)
+%{_libdir}/libplplotgnome2d.a
+
+%files -n python-plplot-gnome
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py_sitedir}/cplplotcanvasmodule.so
+%attr(755,root,root) %{py_sitedir}/gcwmodule.so
+%{py_sitedir}/plplotcanvas.py
 %endif
 
 %if %{with svga}
