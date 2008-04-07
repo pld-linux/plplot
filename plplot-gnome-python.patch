@@ -1,0 +1,24 @@
+--- plplot-5.8.0/bindings/gnome2/python/Makefile.am~	2007-11-18 21:04:01.000000000 +0100
++++ plplot-5.8.0/bindings/gnome2/python/Makefile.am	2008-04-07 16:19:43.000000000 +0200
+@@ -38,7 +38,7 @@
+ 
+ 
+ # Must have "exec" in the name.
+-ourexecpythondir = $(pythondir)
++ourexecpythondir = $(pyexecdir)
+ 
+ libplplot = $(top_builddir)/src/libplplot$(LIB_TAG).la
+ 
+@@ -110,10 +110,10 @@
+ if enable_pygcw
+ 
+ gcwmoduleexecpython_LTLIBRARIES = gcwmodule.la
+-gcwmoduleexecpythondir = $(pythondir)
++gcwmoduleexecpythondir = $(pyexecdir)
+ 
+ cplplotcanvasmoduleexecpython_LTLIBRARIES = cplplotcanvasmodule.la
+-cplplotcanvasmoduleexecpythondir = $(pythondir)
++cplplotcanvasmoduleexecpythondir = $(pyexecdir)
+ cplplotcanvasmoduleexecpython_DATA = plplotcanvas.py
+ 
+ 
