@@ -1,3 +1,5 @@
+# TODO
+# - fix -octave dirs
 #
 # Conditional build:
 %bcond_without	gnome		# don't build gnome driver
@@ -785,6 +787,11 @@ rm -rf $RPM_BUILD_ROOT
 %files octave
 %defattr(644,root,root,755)
 %doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE,plplot_octave_txt}
+/usr/lib64/octave/site/oct/x86_64-pld-linux-gnu
+# XXX error: plplot-octave-5.8.0-1: req /usr/lib64/octave/site/oct/x86_64-pld-linux-gnu not found
+# 11:35:25 glen[pts/25]@carme-pld rpm/SPECS$ ql octave|grep /usr/lib64/octave/site/
+#/usr/lib64/octave/site/exec
+#/usr/lib64/octave/site/exec/x86_64-pld-linux-gnu
 %attr(755,root,root) %{_libdir}/octave/*/oct/*/plplot_octave.oct
 %{_datadir}/octave/site/m/PLplot
 %{_datadir}/plplot_octave
