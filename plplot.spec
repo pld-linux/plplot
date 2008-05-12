@@ -1,5 +1,3 @@
-# TODO
-# - fix -octave dirs
 #
 # Conditional build:
 %bcond_without	gnome		# don't build gnome driver
@@ -31,10 +29,9 @@ BuildRequires:	fftw3-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
 BuildRequires:	gd-devel
-%{?with_gnome:BuildRequires:	libgnomeui-devel}
-%{?with_gnome:BuildRequires:	libgnomeprintui-devel}
+%{?with_gnome:BuildRequires:	libgnomeui-devel >= 2.0}
+%{?with_gnome:BuildRequires:	libgnomeprintui-devel >= 2.2}
 %{?with_gnome:BuildRequires:	libgnomecanvas-devel}
-%{?with_gnome:BuildRequires:	python-gnome-devel}
 BuildRequires:	itcl-devel
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
@@ -47,9 +44,11 @@ BuildRequires:	octave-devel
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-DOM
+BuildRequires:	pkgconfig
 BuildRequires:	python-Numeric-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	python-pygtk-devel >= 2.12.1
+%{?with_gnome:BuildRequires:	python-gnome-devel >= 2.0}
+BuildRequires:	python-pygtk-devel >= 2:2.12.1
 BuildRequires:	qhull-devel
 BuildRequires:	sed >= 4.0
 %{?with_svga:BuildRequires:	svgalib-devel}
@@ -61,6 +60,8 @@ BuildRequires:	tk-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ulibdir	%{_prefix}/lib
+%define		octave_oct_sitedir	%(octave-config --oct-site-dir)
+%define		octave_m_sitedir	%(octave-config --m-site-dir)
 
 %description
 PLplot is a library of functions that are useful for making scientific
@@ -498,14 +499,18 @@ cp -f /usr/share/automake/config.* libltdl
 	--with-pkg-config \
 	--with-pthreads
 
-%{__make} -j1
+%{__make} -j1 \
+	OCTAVE_M_DIR=%{octave_m_sitedir} \
+	OCTAVE_OCT_DIR=%{octave_oct_sitedir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	OCTAVE_M_DIR=%{octave_m_sitedir} \
+	OCTAVE_OCT_DIR=%{octave_oct_sitedir}
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/plplot%{version}/data/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -787,13 +792,8 @@ rm -rf $RPM_BUILD_ROOT
 %files octave
 %defattr(644,root,root,755)
 %doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE,plplot_octave_txt}
-/usr/lib64/octave/site/oct/x86_64-pld-linux-gnu
-# XXX error: plplot-octave-5.8.0-1: req /usr/lib64/octave/site/oct/x86_64-pld-linux-gnu not found
-# 11:35:25 glen[pts/25]@carme-pld rpm/SPECS$ ql octave|grep /usr/lib64/octave/site/
-#/usr/lib64/octave/site/exec
-#/usr/lib64/octave/site/exec/x86_64-pld-linux-gnu
-%attr(755,root,root) %{_libdir}/octave/*/oct/*/plplot_octave.oct
-%{_datadir}/octave/site/m/PLplot
+%attr(755,root,root) %{octave_oct_sitedir}/plplot_octave.oct
+%{octave_m_sitedir}/PLplot
 %{_datadir}/plplot_octave
 
 %files octave-examples
