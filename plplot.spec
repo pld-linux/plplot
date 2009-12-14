@@ -54,6 +54,7 @@ BuildRequires:	qhull-devel
 BuildRequires:	sed >= 4.0
 %{?with_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	swig
+BuildRequires:	swig-python
 BuildRequires:	tcl-devel >= 8.4.11-3
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
