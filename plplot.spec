@@ -20,6 +20,7 @@ Patch2:		%{name}-tk.patch
 Patch3:		%{name}-tcl.patch
 Patch4:		%{name}-octave3.patch
 Patch5:		%{name}-gnome-python.patch
+Patch6:		gcc43.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.8.3
@@ -456,6 +457,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
 	cf/tcl.ac
