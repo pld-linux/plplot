@@ -27,30 +27,33 @@ BuildRequires:	automake >= 1:1.8.3
 BuildRequires:	cd-devel >= 1.3-2
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	fftw3-devel
+BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-g77
 BuildRequires:	gd-devel
-%{?with_gnome:BuildRequires:	libgnomeui-devel >= 2.0}
-%{?with_gnome:BuildRequires:	libgnomeprintui-devel >= 2.2}
-%{?with_gnome:BuildRequires:	libgnomecanvas-devel}
 BuildRequires:	itcl-devel
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	lapack-devel
+%{?with_gnome:BuildRequires:	libgnomecanvas-devel}
+%{?with_gnome:BuildRequires:	libgnomeprintui-devel >= 2.2}
+%{?with_gnome:BuildRequires:	libgnomeui-devel >= 2.0}
 BuildRequires:	libjpeg-devel
+BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	octave-devel
-BuildRequires:	perl-XML-SAX-Expat
-BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-DOM
+BuildRequires:	perl-XML-Parser
+BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	python-Numeric-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 %{?with_gnome:BuildRequires:	python-gnome-devel >= 2.0}
 BuildRequires:	python-pygtk-devel >= 2:2.12.1
 BuildRequires:	qhull-devel
+BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
 %{?with_svga:BuildRequires:	svgalib-devel}
 BuildRequires:	swig
@@ -362,8 +365,8 @@ Biblioteka PLplot - wiązanie dla GNOME.
 Summary:	PLplot library - GNOME binding development files
 Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla GNOME
 Group:		Development/Libraries
-Requires:	%{name}-gnome = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-gnome = %{version}-%{release}
 
 %description gnome-devel
 PLplot library - GNOME binding development files.
