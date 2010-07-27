@@ -48,7 +48,7 @@ BuildRequires:	perl-XML-DOM
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
-BuildRequires:	python-Numeric-devel >= 15.3
+BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 %{?with_gnome:BuildRequires:	python-gnome-devel >= 2.0}
 BuildRequires:	python-pygtk-devel >= 2:2.12.1
@@ -417,7 +417,7 @@ Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
-Requires:	python-Numeric
+Requires:	python-numpy
 
 %description -n python-plplot
 PLplot library - Python binding.
@@ -465,8 +465,6 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 
 sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
 	cf/tcl.ac
-
-cp -f bindings/python/plplot.py.Numeric bindings/python/plplot.py
 
 %build
 cp -f /usr/share/automake/config.* libltdl
