@@ -463,7 +463,7 @@ cd build
 mv $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-rm -r installed-docs
+rm -rf installed-docs
 mv $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
 
 %if %{with java}
