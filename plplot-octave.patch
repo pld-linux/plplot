@@ -1,0 +1,43 @@
+--- plplot-5.9.6/cmake/modules/octave.cmake~	2010-06-05 18:11:39.000000000 +0200
++++ plplot-5.9.6/cmake/modules/octave.cmake	2010-07-28 19:03:30.645624474 +0200
+@@ -180,6 +180,7 @@
+   
+   # octave-2.1 (or higher) logic.
+   #_OCTAVE_M_DIR
++  if(NOT DEFINED OCTAVE_M_DIR)
+   file(WRITE ${CMAKE_BINARY_DIR}/octave_command
+   "printf(octave_config_info(\"localfcnfiledir\"));"
+   )
+@@ -188,6 +189,16 @@
+   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+   OUTPUT_VARIABLE _OCTAVE_M_DIR
+   )
++  # Replace the OCTAVE_PREFIX with the PLplot prefix in OCTAVE_M_DIR
++  string(REPLACE
++  "${OCTAVE_PREFIX}" 
++  "${CMAKE_INSTALL_PREFIX}"
++  OCTAVE_M_DIR
++  ${_OCTAVE_M_DIR}
++  )
++  endif(NOT DEFINED OCTAVE_M_DIR)
++  message(STATUS "OCTAVE_M_DIR = ${OCTAVE_M_DIR}")
++  
+   #OCTAVE_OCT_DIR
+   if(NOT DEFINED OCTAVE_OCT_DIR)
+   file(WRITE ${CMAKE_BINARY_DIR}/octave_command
+@@ -200,15 +211,6 @@
+   )
+   endif(NOT DEFINED OCTAVE_OCT_DIR)
+ 
+-  # Replace the OCTAVE_PREFIX with the PLplot prefix in OCTAVE_M_DIR
+-  string(REPLACE
+-  "${OCTAVE_PREFIX}" 
+-  "${CMAKE_INSTALL_PREFIX}"
+-  OCTAVE_M_DIR
+-  ${_OCTAVE_M_DIR}
+-  )
+-  message(STATUS "OCTAVE_M_DIR = ${OCTAVE_M_DIR}")
+-  
+   # Transform OCTAVE_OCT_DIR if prefixes not the same.
+   if(NOT CMAKE_INSTALL_PREFIX STREQUAL "${OCTAVE_PREFIX}")
+     set(OCTAVE_OCT_DIR ${PLPLOT_OCTAVE_DIR})
