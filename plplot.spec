@@ -1,9 +1,8 @@
 #
 # Conditional build:
-%bcond_without	gnome		# don't build gnome driver
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_with	java		# build Java binding
-%bcond_without	svga		# don't build linuxvga driver
+%bcond_with	itcl		# build iTCL binding
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
@@ -14,54 +13,51 @@ License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	772c772bde3a107e5f06d21cefa7f6b6
-Patch0:		%{name}-FHS.patch
-Patch1:		%{name}-lib64.patch
-Patch2:		%{name}-tk.patch
-Patch3:		%{name}-tcl.patch
-Patch4:		%{name}-octave3.patch
-Patch5:		%{name}-gnome-python.patch
-Patch6:		gcc43.patch
 URL:		http://plplot.sourceforge.net/
-BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake >= 1:1.8.3
-BuildRequires:	cd-devel >= 1.3-2
+BuildRequires:	QtGui-devel
+BuildRequires:	QtSvg-devel
+BuildRequires:	QtXml-devel
+BuildRequires:	cmake
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	fftw3-devel
 BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
-BuildRequires:	gcc-g77
-BuildRequires:	gd-devel
-BuildRequires:	itcl-devel
+BuildRequires:	gcc-ada
+BuildRequires:	gcc-c++
+BuildRequires:	gcc-fortran
+%{?with_itcl:BuildRequires:	itcl-devel}
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	lapack-devel
-%{?with_gnome:BuildRequires:	libgnomecanvas-devel}
-%{?with_gnome:BuildRequires:	libgnomeprintui-devel >= 2.2}
-%{?with_gnome:BuildRequires:	libgnomeui-devel >= 2.0}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
 BuildRequires:	octave-devel
+%{?with_perl_pdl:BuildRequires:	perl-PDL}
 BuildRequires:	perl-XML-DOM
 BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
+BuildRequires:	pango-devel
+BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
-%{?with_gnome:BuildRequires:	python-gnome-devel >= 2.0}
 BuildRequires:	python-pygtk-devel >= 2:2.12.1
 BuildRequires:	qhull-devel
+BuildRequires:	qt4-qmake
 BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
-%{?with_svga:BuildRequires:	svgalib-devel}
+BuildRequires:	sip
 BuildRequires:	swig
 BuildRequires:	swig-python
 BuildRequires:	tcl-devel >= 8.4.11-3
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libICE-devel
+BuildRequires:	xorg-lib-libX11-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ulibdir	%{_prefix}/lib
@@ -102,45 +98,6 @@ Obsługiwanych jest wiele urządzeń wyjściowych, w tym PostScript, PNG,
 JPEG, LaTeX i inne, a także urządzenia interaktywne, takie jak xwin,
 tk, xterm i Tektronics. Nowe urządzenia można łatwo dodać pisząc parę
 zależnych od urządzenia funkcji.
-
-%package driver-gd
-Summary:	GD driver for PLplot library
-Summary(pl.UTF-8):	Sterownik GD dla biblioteki PLplot
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description driver-gd
-GD driver for PLplot library. It supports JPEG and PNG output formats.
-
-%description driver-gd -l pl.UTF-8
-Sterownik GD dla biblioteki PLplot. Obsługuje formaty wyjścia JPEG i
-PNG.
-
-%package driver-linuxvga
-Summary:	linuxvga driver for PLplot library
-Summary(pl.UTF-8):	Sterownik linuxvga dla biblioteki PLplot
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description driver-linuxvga
-linuxvga driver for PLplot library. It supports svgalib output.
-
-%description driver-gd -l pl.UTF-8
-Sterownik linuxvga dla biblioteki PLplot. Obsługuje wyjście poprzez
-svgalib.
-
-%package driver-gnome
-Summary:	GNOME driver for PLplot library
-Summary(pl.UTF-8):	Sterownik GNOME dla biblioteki PLplot
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description driver-gnome
-GNOME driver for PLplot library. It supports GnomeCanvas output.
-
-%description driver-gnome -l pl.UTF-8
-Sterownik GNOME dla biblioteki PLplot. Obsługuje wyjście do widgetu
-GnomeCanvas.
 
 %package driver-ntk
 Summary:	ntk driver for PLplot library
@@ -188,24 +145,13 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 2.1
 Requires:	qhull-devel
+Obsoletes:	plplot-static
 
 %description devel
 Header files for PLplot library.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki PLplot.
-
-%package static
-Summary:	Static PLplot library
-Summary(pl.UTF-8):	Statyczna biblioteka PLplot
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static PLplot library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka PLplot.
 
 %package c++
 Summary:	PLplot library - C++ binding
@@ -226,24 +172,13 @@ Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	libstdc++-devel
+Obsoletes:	plplot-c++-static
 
 %description c++-devel
 PLplot library - C++ binding development files.
 
 %description c++-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla C++.
-
-%package c++-static
-Summary:	PLplot library - C++ binding static library
-Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla C++
-Group:		Development/Libraries
-Requires:	%{name}-c++-devel = %{version}-%{release}
-
-%description c++-static
-PLplot library - C++ binding static library.
-
-%description c++-static -l pl.UTF-8
-Biblioteka PLplot - biblioteka statyczna wiązania dla C++.
 
 %package f77
 Summary:	PLplot library - FORTRAN 77 binding
@@ -263,26 +198,14 @@ Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języ
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-f77 = %{version}-%{release}
-Requires:	gcc-g77
+Requires:	gcc-fortran
+Obsoletes:	plplot-f77-static
 
 %description f77-devel
 PLplot library - FORTRAN 77 binding development files.
 
 %description f77-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN
-77.
-
-%package f77-static
-Summary:	PLplot library - FORTRAN 77 binding static library
-Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla języka FORTRAN 77
-Group:		Development/Libraries
-Requires:	%{name}-f77-devel = %{version}-%{release}
-
-%description f77-static
-PLplot library - FORTRAN 77 binding static library.
-
-%description f77-static -l pl.UTF-8
-Biblioteka PLplot - biblioteka statyczna wiązania dla języka FORTRAN
 77.
 
 %package java
@@ -329,62 +252,14 @@ Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/T
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
-Requires:	itcl-devel
+%{?with_itcl:Requires:	itcl-devel}
+Obsoletes:	plplot-tcl-static
 
 %description tcl-devel
 PLplot library - Tcl/Tk binding development files.
 
 %description tcl-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/Tk.
-
-%package tcl-static
-Summary:	PLplot library - Tcl/Tk binding static library
-Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk
-Group:		Development/Libraries
-Requires:	%{name}-tcl-devel = %{version}-%{release}
-
-%description tcl-static
-PLplot library - Tcl/Tk binding static library.
-
-%description tcl-static -l pl.UTF-8
-Biblioteka PLplot - biblioteka statyczna wiązania dla Tcl/Tk.
-
-%package gnome
-Summary:	PLplot library - GNOME binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla GNOME
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description gnome
-PLplot library - GNOME binding.
-
-%description gnome -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla GNOME.
-
-%package gnome-devel
-Summary:	PLplot library - GNOME binding development files
-Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla GNOME
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-Requires:	%{name}-gnome = %{version}-%{release}
-
-%description gnome-devel
-PLplot library - GNOME binding development files.
-
-%description gnome-devel -l pl.UTF-8
-Biblioteka PLplot - pliki programistyczne wiązania dla GNOME.
-
-%package gnome-static
-Summary:	PLplot library - GNOME binding static library
-Summary(pl.UTF-8):	Biblioteka PLplot - biblioteka statyczna wiązania dla GNOME
-Group:		Development/Libraries
-Requires:	%{name}-gnome-devel = %{version}-%{release}
-
-%description gnome-static
-PLplot library - GNOME binding static library.
-
-%description gnome-static -l pl.UTF-8
-Biblioteka PLplot - biblioteka statyczna wiązania dla GNOME.
 
 %package octave
 Summary:	PLplot library - Octave binding
@@ -425,19 +300,6 @@ PLplot library - Python binding.
 %description -n python-plplot -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Pythona.
 
-%package -n python-plplot-gnome
-Summary:	PLplot library - Python GNOME binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona GNOME
-Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
-%pyrequires_eq	python-libs
-
-%description -n python-plplot-gnome
-PLplot library - Python GNOME binding.
-
-%description -n python-plplot-gnome -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla Pythona GNOME.
-
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
 Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla Pythona
@@ -453,70 +315,48 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 
 %prep
 %setup -q
-%patch0 -p1
-%if "%{_lib}" == "lib64"
-%patch1 -p1
-%endif
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-
-sed -i -e 's#/usr/include/tcl8.4/tcl-private/generic#%{_includedir}/tcl-private/generic#g' configure* \
-	cf/tcl.ac
 
 %build
-cp -f /usr/share/automake/config.* libltdl
-%{__libtoolize}
-%{__aclocal} -I cf
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	DATA_DIR="%{_libdir}/%{name}%{version}/data" \
-	PYTHON_INC_DIR=/usr/include/python%{py_ver} \
-	TCLINCDIR="%{_includedir}/tcl-private/generic" \
-	TCLLIBDIR="%{_ulibdir}" \
-	TKLIBDIR="%{_ulibdir}" \
-	ITCLLIBDIR="%{_ulibdir}" \
-	ITKLIBDIR="%{_ulibdir}" \
-	%{!?with_svga:--disable-linuxvga} \
-	%{!?with_perl_pdl:--enable-pdl} \
-	--enable-conex \
-	--enable-dg300 \
-	--enable-imp \
-	%{?with_java:JAVA_HOME=/usr/%{_lib}/java} \
-	%{!?with_java:--disable-java} \
-	--enable-ljii \
-	--enable-ljiip \
-	--enable-mskermit \
-	--enable-ntk \
-	--enable-octave \
-	--enable-tek4010 \
-	--enable-tek4010f \
-	--enable-tek4107 \
-	--enable-tek4107f \
-	--enable-versaterm \
-	--enable-vlt \
-	--enable-xterm \
-	--with-pkg-config \
-	--with-pthreads
+mkdir build
+cd build
+cmake \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+%if %{with java}
+	-DJAVA_HOME=/usr/%{_lib}/java \
+#        -DCMAKE_Java_RUNTIME=$(JAVA_HOME)/bin/java \
+#        -DCMAKE_Java_COMPILER=$(JAVA_HOME)/bin/javac \
+#        -DCMAKE_Java_ARCHIVE=$(JAVA_HOME)/bin/jar
+%else
+	-DENABLE_java=OFF \
+%endif
+	-DHAVE_PTHREAD=ON \
+	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
+	-DUSE_RPATH=OFF \
+	-DENABLE_tk=ON \
+	-DENABLE_ocaml=OFF \
+	-DENABLE_lua=OFF \
+	-DENABLE_itcl=%{!?with_itcl:OFF}%{?with_itcl:ON} \
+	-DPLD_ntk=ON \
+	-DPLD_plmeta=ON \
+	-DPLD_cgm=ON \
+	-DPLD_pstex=ON \
+	-DwxWidgets_CONFIG_EXECUTABLE=wx-gtk2-unicode-config \
+	-DwxWidgets_USE_UNICODE=ON \
+	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
+	../
 
-%{__make} -j1 \
-	OCTAVE_M_DIR=%{octave_m_sitedir} \
-	OCTAVE_OCT_DIR=%{octave_oct_sitedir}
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}
 
+cd build
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	OCTAVE_M_DIR=%{octave_m_sitedir} \
-	OCTAVE_OCT_DIR=%{octave_oct_sitedir}
+	DESTDIR=$RPM_BUILD_ROOT
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/plplot%{version}/data/examples \
+mv -f $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 rm -rf installed-docs
@@ -558,139 +398,56 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libcsironn.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcsironn.so.0
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.11
+%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.9
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
 %{_mandir}/man1/pltek.1*
 %{_mandir}/man1/pstex2eps.1*
 %dir %{_libdir}/plplot%{version}
-%{_libdir}/plplot%{version}/data
 %dir %{_libdir}/plplot%{version}/driversd
-# drivers list; *.la are used (by libltdl)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/cgm.so
-%{_libdir}/plplot%{version}/driversd/cgm.la
 %{_libdir}/plplot%{version}/driversd/cgm.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/dg300.so
-%{_libdir}/plplot%{version}/driversd/dg300.la
-%{_libdir}/plplot%{version}/driversd/dg300.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/hpgl.so
-%{_libdir}/plplot%{version}/driversd/hpgl.la
-%{_libdir}/plplot%{version}/driversd/hpgl.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/impress.so
-%{_libdir}/plplot%{version}/driversd/impress.la
-%{_libdir}/plplot%{version}/driversd/impress.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ljii.so
-%{_libdir}/plplot%{version}/driversd/ljii.la
-%{_libdir}/plplot%{version}/driversd/ljii.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ljiip.so
-%{_libdir}/plplot%{version}/driversd/ljiip.la
-%{_libdir}/plplot%{version}/driversd/ljiip.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/mem.so
-%{_libdir}/plplot%{version}/driversd/mem.la
 %{_libdir}/plplot%{version}/driversd/mem.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/null.so
-%{_libdir}/plplot%{version}/driversd/null.la
 %{_libdir}/plplot%{version}/driversd/null.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pbm.so
-%{_libdir}/plplot%{version}/driversd/pbm.la
-%{_libdir}/plplot%{version}/driversd/pbm.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/plmeta.so
-%{_libdir}/plplot%{version}/driversd/plmeta.la
 %{_libdir}/plplot%{version}/driversd/plmeta.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ps.so
-%{_libdir}/plplot%{version}/driversd/ps.la
 %{_libdir}/plplot%{version}/driversd/ps.rc
-#%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
-#%{_libdir}/plplot%{version}/driversd/pstex.la
-#%{_libdir}/plplot%{version}/driversd/pstex.rc
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tek.so
-%{_libdir}/plplot%{version}/driversd/tek.la
-%{_libdir}/plplot%{version}/driversd/tek.rc
+%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
+%{_libdir}/plplot%{version}/driversd/pstex.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xfig.so
-%{_libdir}/plplot%{version}/driversd/xfig.la
 %{_libdir}/plplot%{version}/driversd/xfig.rc
-
-%files driver-gd
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/gd.so
-%{_libdir}/plplot%{version}/driversd/gd.la
-%{_libdir}/plplot%{version}/driversd/gd.rc
-
-%if %{with gnome}
-%files driver-gnome
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/gcw.so
-%{_libdir}/plplot%{version}/driversd/gcw.la
-%{_libdir}/plplot%{version}/driversd/gcw.rc
-
-%files gnome
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotgnome2d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotgnome2d.so.0
-
-%files gnome-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotgnome2d.so
-%{_libdir}/libplplotgnome2d.la
-%{_pkgconfigdir}/plplotd-gnome2.pc
-
-%files gnome-static
-%defattr(644,root,root,755)
-%{_libdir}/libplplotgnome2d.a
-
-%files -n python-plplot-gnome
-%defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/cplplotcanvasmodule.so
-%attr(755,root,root) %{py_sitedir}/gcwmodule.so
-%{py_sitedir}/plplotcanvas.py
-%endif
-
-%if %{with svga}
-%files driver-linuxvga
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/linuxvga.so
-%{_libdir}/plplot%{version}/driversd/linuxvga.la
-%{_libdir}/plplot%{version}/driversd/linuxvga.rc
-%endif
 
 %files driver-ntk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ntk.so
-%{_libdir}/plplot%{version}/driversd/ntk.la
 %{_libdir}/plplot%{version}/driversd/ntk.rc
 
 %files driver-tk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tk.so
-%{_libdir}/plplot%{version}/driversd/tk.la
 %{_libdir}/plplot%{version}/driversd/tk.rc
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tkwin.so
-%{_libdir}/plplot%{version}/driversd/tkwin.la
 %{_libdir}/plplot%{version}/driversd/tkwin.rc
 
 %files driver-xwin
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xwin.so
-%{_libdir}/plplot%{version}/driversd/xwin.la
 %{_libdir}/plplot%{version}/driversd/xwin.rc
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/plplot-config
-%attr(755,root,root) %{_bindir}/plplot_libtool
 %attr(755,root,root) %{_libdir}/libcsirocsa.so
 %attr(755,root,root) %{_libdir}/libcsironn.so
 %attr(755,root,root) %{_libdir}/libplplotd.so
-%{_libdir}/libcsirocsa.la
-%{_libdir}/libcsironn.la
-%{_libdir}/libplplotd.la
 %{_includedir}/plplot
 %exclude %{_includedir}/plplot/pltcl.h
 %exclude %{_includedir}/plplot/pltk.h
 %exclude %{_includedir}/plplot/tclMatrix.h
 %{_pkgconfigdir}/plplotd.pc
-%{_mandir}/man1/plplot_libtool.1*
 %dir %{_examplesdir}/%{name}-%{version}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
@@ -701,12 +458,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_examplesdir}/%{name}-%{version}/perl
 %endif
 
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libcsirocsa.a
-%{_libdir}/libcsironn.a
-%{_libdir}/libplplotd.a
-
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so.*.*.*
@@ -715,14 +466,9 @@ rm -rf $RPM_BUILD_ROOT
 %files c++-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so
-%{_libdir}/libplplotcxxd.la
 %{_pkgconfigdir}/plplotd-c++.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
-
-%files c++-static
-%defattr(644,root,root,755)
-%{_libdir}/libplplotcxxd.a
 
 %files f77
 %defattr(644,root,root,755)
@@ -735,16 +481,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf77cd.so
 %attr(755,root,root) %{_libdir}/libplplotf77d.so
-%{_libdir}/libplplotf77cd.la
-%{_libdir}/libplplotf77d.la
 %{_pkgconfigdir}/plplotd-f77.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f77.sh
 %{_examplesdir}/%{name}-%{version}/f77
-
-%files f77-static
-%defattr(644,root,root,755)
-%{_libdir}/libplplotf77cd.a
-%{_libdir}/libplplotf77d.a
 
 %if %{with java}
 %files java
@@ -768,9 +507,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.11
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.9
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.11
+%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
 %{_mandir}/man1/pltcl.1*
 %{_mandir}/man1/plserver.1*
 
@@ -778,8 +517,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so
-%{_libdir}/libplplottcltkd.la
-%{_libdir}/libtclmatrixd.la
 %{_includedir}/plplot/pltcl.h
 %{_includedir}/plplot/pltk.h
 %{_includedir}/plplot/tclMatrix.h
@@ -787,11 +524,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_tcl.sh
 %{_examplesdir}/%{name}-%{version}/tcl
 %{_examplesdir}/%{name}-%{version}/tk
-
-%files tcl-static
-%defattr(644,root,root,755)
-%{_libdir}/libplplottcltkd.a
-%{_libdir}/libtclmatrixd.a
 
 %files octave
 %defattr(644,root,root,755)
