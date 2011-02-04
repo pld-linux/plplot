@@ -288,7 +288,7 @@ Obsoletes:	plplot-java-static
 %description java-devel
 PLplot library - Java binding development files.
 
-%description java -l pl.UTF-8
+%description java-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla Javy.
 
 %package tcl
@@ -327,7 +327,7 @@ Requires:	%{name} = %{version}-%{release}
 %description qt4
 PLplot library - Qt4 binding.
 
-%description c++ -l pl.UTF-8
+%description qt4 -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Qt4.
 
 %package qt4-devel
