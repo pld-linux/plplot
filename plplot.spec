@@ -8,12 +8,13 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.9.6
-Release:	4
+Release:	5
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	772c772bde3a107e5f06d21cefa7f6b6
 Patch0:		%{name}-octave.patch
+Patch1:		%{name}-qhull.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel
 BuildRequires:	QtSvg-devel
@@ -45,7 +46,7 @@ BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-pygtk-devel >= 2:2.12.1
-BuildRequires:	qhull-devel
+BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt4-build
 BuildRequires:	qt4-qmake
 BuildRequires:	rpm-pythonprov
@@ -415,6 +416,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 mkdir build
