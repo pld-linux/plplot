@@ -34,7 +34,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	octave-devel
+BuildRequires:	octave-devel >= 2:3.4.2
 BuildRequires:	pango-devel
 %{?with_perl_pdl:BuildRequires:	perl-PDL}
 BuildRequires:	perl-XML-DOM
