@@ -1,0 +1,11 @@
+--- plplot-5.9.9/lib/nn/CMakeLists.txt.orig	2011-10-13 02:43:01.000000000 +0200
++++ plplot-5.9.9/lib/nn/CMakeLists.txt	2011-11-18 21:55:24.366575267 +0100
+@@ -46,7 +46,7 @@
+     COMPILE_FLAGS "-I${QHULL_INCLUDE_DIRS}"
+     INSTALL_NAME_DIR "${LIB_DIR}"
+     )
+-  target_link_libraries(csironn ${QHULL_LIBRARIES})
++  target_link_libraries(csironn ${QHULL_LIBRARIES} m)
+   install(TARGETS csironn
+     EXPORT export_plplot
+     ARCHIVE DESTINATION ${LIB_DIR}
