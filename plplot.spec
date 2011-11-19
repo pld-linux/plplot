@@ -7,19 +7,21 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.9.6
-Release:	5
-License:	LGPL
+Version:	5.9.9
+Release:	1
+License:	LGPL v2+
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	772c772bde3a107e5f06d21cefa7f6b6
+Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
+# Source0-md5:	9f2c8536a58875d97ab6b29bbed67d26
 Patch0:		%{name}-octave.patch
 Patch1:		%{name}-qhull.patch
+Patch2:		%{name}-link.patch
+Patch3:		%{name}-cmake.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel
 BuildRequires:	QtSvg-devel
 BuildRequires:	QtXml-devel
-BuildRequires:	cmake
+BuildRequires:	cmake >= 2.6.4
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	fftw3-devel
 BuildRequires:	fftw3-single-devel
@@ -64,7 +66,7 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # libcsironn.so.0.0.1, hypot is on libm and libcsironn IS linked with libm
-%define		no_install_post_check_so	1
+#define		no_install_post_check_so	1
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
 %define		octave_m_sitedir	%(octave-config --m-site-dir)
@@ -253,7 +255,7 @@ Biblioteka PLplot - wiązanie dla języka FORTRAN 95.
 
 %package f95-devel
 Summary:	PLplot library - FORTRAN 95 binding development files
-Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 77
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 95
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-f95 = %{version}-%{release}
@@ -387,18 +389,18 @@ PLplot library - Python binding.
 Biblioteka PLplot - wiązanie dla Pythona.
 
 %package -n python-plplot-qt4
-Summary:	PLplot library - Python Qt4 binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona Qt4
+Summary:	PLplot library - PyQt4 binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla PyQt4
 Group:		Libraries/Python
 Requires:	python-plplot = %{version}-%{release}
 %pyrequires_eq	python-libs
 Requires:	python-numpy
 
 %description -n python-plplot-qt4
-PLplot library - Python Qt4 binding.
+PLplot library - Python/PyQt4 binding.
 
 %description -n python-plplot-qt4 -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla Pythona Qt4.
+Biblioteka PLplot - wiązanie dla Pythona/PyQt4.
 
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
@@ -417,22 +419,20 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 mkdir build
 cd build
-cmake \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
-	-DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+%cmake .. \
 %if %{with java}
 	-DJAVA_HOME=/usr/%{_lib}/java \
-#        -DCMAKE_Java_RUNTIME=$(JAVA_HOME)/bin/java \
-#        -DCMAKE_Java_COMPILER=$(JAVA_HOME)/bin/javac \
-#        -DCMAKE_Java_ARCHIVE=$(JAVA_HOME)/bin/jar
 %else
 	-DENABLE_java=OFF \
 %endif
-	-DHAVE_PTHREAD=ON \
+	-DF77_INCLUDE_DIR=%{_includedir}/plplot \
+	-DF95_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
@@ -443,14 +443,18 @@ cmake \
 	-DENABLE_ada=OFF \
 	-DENABLE_itcl=%{!?with_itcl:OFF}%{?with_itcl:ON} \
 	-DENABLE_itk=%{!?with_itcl:OFF}%{?with_itcl:ON} \
+	-DHAVE_PTHREAD=ON \
 	-DPLD_ntk=ON \
 	-DPLD_plmeta=ON \
 	-DPLD_cgm=ON \
 	-DPLD_pstex=ON \
 	-DwxWidgets_CONFIG_EXECUTABLE=wx-gtk2-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON \
-	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
-	../
+	%{!?with_perl_pdl:-DENABLE_pdl=OFF}
+
+#        -DCMAKE_Java_RUNTIME=$(JAVA_HOME)/bin/java \
+#        -DCMAKE_Java_COMPILER=$(JAVA_HOME)/bin/javac \
+#        -DCMAKE_Java_ARCHIVE=$(JAVA_HOME)/bin/jar
 
 %{__make}
 
@@ -458,8 +462,7 @@ cmake \
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}
 
-cd build
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 mv $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
@@ -498,8 +501,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog Copyright FAQ NEWS PROBLEMS README SERVICE ToDo
-%doc build/installed-docs/README.{1st.csa,1st.nn,csa,nn,drivers}
+%doc ABOUT AUTHORS ChangeLog.release Copyright FAQ NEWS PROBLEMS README README.release SERVICE ToDo
+%doc installed-docs/README.{1st.csa,1st.nn,csa,nn,drivers}
 %attr(755,root,root) %{_bindir}/plm2gif
 %attr(755,root,root) %{_bindir}/plpr
 %attr(755,root,root) %{_bindir}/plrender
@@ -514,7 +517,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.11
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
@@ -523,21 +526,21 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/plplot%{version}
 %dir %{_libdir}/plplot%{version}/driversd
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/cgm.so
-%{_libdir}/plplot%{version}/driversd/cgm.rc
+%{_libdir}/plplot%{version}/driversd/cgm.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/mem.so
-%{_libdir}/plplot%{version}/driversd/mem.rc
+%{_libdir}/plplot%{version}/driversd/mem.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/null.so
-%{_libdir}/plplot%{version}/driversd/null.rc
+%{_libdir}/plplot%{version}/driversd/null.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/plmeta.so
-%{_libdir}/plplot%{version}/driversd/plmeta.rc
+%{_libdir}/plplot%{version}/driversd/plmeta.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ps.so
-%{_libdir}/plplot%{version}/driversd/ps.rc
+%{_libdir}/plplot%{version}/driversd/ps.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
-%{_libdir}/plplot%{version}/driversd/pstex.rc
+%{_libdir}/plplot%{version}/driversd/pstex.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/svg.so
-%{_libdir}/plplot%{version}/driversd/svg.rc
+%{_libdir}/plplot%{version}/driversd/svg.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xfig.so
-%{_libdir}/plplot%{version}/driversd/xfig.rc
+%{_libdir}/plplot%{version}/driversd/xfig.driver_info
 %dir %{_datadir}/plplot%{version}
 %{_datadir}/plplot%{version}/*.map
 %{_datadir}/plplot%{version}/*.pal
@@ -546,29 +549,29 @@ rm -rf $RPM_BUILD_ROOT
 %files driver-cairo
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/cairo.so
-%{_libdir}/plplot%{version}/driversd/cairo.rc
+%{_libdir}/plplot%{version}/driversd/cairo.driver_info
 
 %files driver-ntk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ntk.so
-%{_libdir}/plplot%{version}/driversd/ntk.rc
+%{_libdir}/plplot%{version}/driversd/ntk.driver_info
 
 %files driver-tk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tk.so
-%{_libdir}/plplot%{version}/driversd/tk.rc
+%{_libdir}/plplot%{version}/driversd/tk.driver_info
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tkwin.so
-%{_libdir}/plplot%{version}/driversd/tkwin.rc
+%{_libdir}/plplot%{version}/driversd/tkwin.driver_info
 
 %files driver-qt4
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/qt.so
-%{_libdir}/plplot%{version}/driversd/qt.rc
+%{_libdir}/plplot%{version}/driversd/qt.driver_info
 
 %files driver-xwin
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xwin.so
-%{_libdir}/plplot%{version}/driversd/xwin.rc
+%{_libdir}/plplot%{version}/driversd/xwin.driver_info
 
 %files devel
 %defattr(644,root,root,755)
@@ -577,10 +580,27 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libnistcd.so
 %attr(755,root,root) %{_libdir}/libplplotd.so
 %attr(755,root,root) %{_libdir}/libqsastime.so
-%{_includedir}/plplot
-%exclude %{_includedir}/plplot/pltcl.h
-%exclude %{_includedir}/plplot/pltk.h
-%exclude %{_includedir}/plplot/tclMatrix.h
+%dir %{_includedir}/plplot
+%{_includedir}/plplot/cd.h
+%{_includedir}/plplot/defines.h
+%{_includedir}/plplot/disptab.h
+%{_includedir}/plplot/drivers.h
+%{_includedir}/plplot/pdf.h
+%{_includedir}/plplot/plConfig.h
+%{_includedir}/plplot/plDevs.h
+%{_includedir}/plplot/pldebug.h
+%{_includedir}/plplot/pldll.h
+%{_includedir}/plplot/plevent.h
+%{_includedir}/plplot/plplot.h
+%{_includedir}/plplot/plplotP.h
+%{_includedir}/plplot/plstrm.h
+%{_includedir}/plplot/qsastime.h
+%{_includedir}/plplot/qsastimedll.h
+# xwin driver (uses X11 headers)
+%{_includedir}/plplot/plxwd.h
+# -gnome
+%{_includedir}/plplot/gcw.h
+%{_includedir}/plplot/plplotcanvas.h
 %{_pkgconfigdir}/plplotd.pc
 %dir %{_examplesdir}/%{name}-%{version}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
@@ -601,11 +621,12 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.10
 
 %files c++-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so
+%{_includedir}/plplot/plstream.h
 %{_pkgconfigdir}/plplotd-c++.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
@@ -621,12 +642,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf77cd.so
 %attr(755,root,root) %{_libdir}/libplplotf77d.so
+%{_includedir}/plplot/plplot_parameters.h
 %{_pkgconfigdir}/plplotd-f77.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f77.sh
 %{_examplesdir}/%{name}-%{version}/f77
 
 %files f95
 %defattr(644,root,root,755)
+%doc bindings/f95/readme_f95.txt
 %attr(755,root,root) %{_libdir}/libplplotf95cd.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libplplotf95cd.so.9
 %attr(755,root,root) %{_libdir}/libplplotf95d.so.*.*.*
@@ -636,6 +659,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf95cd.so
 %attr(755,root,root) %{_libdir}/libplplotf95d.so
+%{_includedir}/plplot/plplot.mod
+%{_includedir}/plplot/plplot_flt.mod
+%{_includedir}/plplot/plplotp.mod
 %{_pkgconfigdir}/plplotd-f95.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f95.sh
 %{_examplesdir}/%{name}-%{version}/f95
@@ -643,7 +669,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with java}
 %files java
 %defattr(644,root,root,755)
-%doc installed-docs/README.javaAPI
 %dir %{_libdir}/java/plplot
 %dir %{_libdir}/java/plplot/core
 %attr(755,root,root) %{_libdir}/java/plplot/core/*.so
@@ -652,7 +677,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files java-devel
 %defattr(644,root,root,755)
-%doc installed-docs/README.javaAPI
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_java.sh
 %{_examplesdir}/%{name}-%{version}/java
 %endif
@@ -690,11 +714,12 @@ rm -rf $RPM_BUILD_ROOT
 %files qt4-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotqtd.so
+%{_includedir}/plplot/qt.h
 %{_pkgconfigdir}/plplotd-qt.pc
 
 %files octave
 %defattr(644,root,root,755)
-%doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE,plplot_octave_txt}
+%doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE}
 %attr(755,root,root) %{octave_oct_sitedir}/plplot_octave.oct
 %{octave_m_sitedir}/PLplot
 %{_datadir}/plplot_octave
