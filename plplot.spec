@@ -1,5 +1,12 @@
+# TODO:
+# - java, itcl, perl_pdl - why disabled?
+# - D binding
+# - AQT (AquaTerm/AQTAdapter.h)
+# - svgalib (bcond)?
+# - system libharu/hpdf (libhpdf, hpdf.h)
 #
 # Conditional build:
+%bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_with	java		# build Java binding
 %bcond_with	itcl		# build iTCL binding
@@ -17,10 +24,12 @@ Patch0:		%{name}-octave.patch
 Patch1:		%{name}-qhull.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-cmake.patch
+Patch4:		%{name}-nofonts.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel
 BuildRequires:	QtSvg-devel
 BuildRequires:	QtXml-devel
+BuildRequires:	agg-devel
 BuildRequires:	cmake >= 2.6.4
 BuildRequires:	docbook-style-dsssl
 BuildRequires:	fftw3-devel
@@ -28,10 +37,13 @@ BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-c++
 BuildRequires:	gcc-fortran
+#BuildRequires:	gd-devel
 %{?with_itcl:BuildRequires:	itcl-devel}
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	lapack-devel
+BuildRequires:	libLASi-devel
+%{?with_gnome2:BuildRequires:	libgnomeprintui-devel >= 2.2}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
@@ -47,7 +59,7 @@ BuildRequires:	pango-devel
 BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	python-pygtk-devel >= 2:2.12.1
+%{?with_gnome2:BuildRequires:	python-pygtk-devel >= 2:2.13.0}
 BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt4-build
 BuildRequires:	qt4-qmake
@@ -56,17 +68,15 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	sip
 BuildRequires:	swig
 BuildRequires:	swig-python
-BuildRequires:	tcl-devel >= 8.4.11-3
+BuildRequires:	tcl-devel >= 8.5
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
-BuildRequires:	tk-devel
+BuildRequires:	tk-devel >= 8.5
+BuildRequires:	wxGTK2-unicode-devel >= 2.6.0
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-# libcsironn.so.0.0.1, hypot is on libm and libcsironn IS linked with libm
-#define		no_install_post_check_so	1
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
 %define		octave_m_sitedir	%(octave-config --m-site-dir)
@@ -119,6 +129,20 @@ ntk (new tk) driver for PLplot library. It supports Tcl/Tk output.
 Sterownik ntk (new tk) dla biblioteki PLplot. Obsługuje wyjście
 poprzez Tcl/Tk.
 
+%package driver-psttf
+Summary:	psttf driver for PLplot library
+Summary(pl.UTF-8):	Sterownik psttf dla biblioteki PLplot
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-psttf
+psttf driver for PLplot library. It's PostScript driver using LASi to
+provide fonts.
+
+%description driver-psttf -l pl.UTF-8
+Sterownik psttf dla biblioteki PLplot. Jest to sterownik
+postscriptowy, wykorzystujący LASi do obsługi fontów.
+
 %package driver-tk
 Summary:	Tk drivers for PLplot library
 Summary(pl.UTF-8):	Sterowniki Tk dla biblioteki PLplot
@@ -139,12 +163,12 @@ Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-cairo
-Cairo driver for PLplot library.
-It supports JPEG and PNG output formats.
+Cairo driver for PLplot library. It supports JPEG and PNG output
+formats.
 
 %description driver-cairo -l pl.UTF-8
-Sterownik cairo dla biblioteki PLplot.
-Obsługuje formaty wyjścia JPEG i PNG.
+Sterownik cairo dla biblioteki PLplot. Obsługuje formaty wyjścia JPEG
+i PNG.
 
 %package driver-qt4
 Summary:	Qt4 driver for PLplot library
@@ -153,10 +177,23 @@ Group:		Libraries
 Requires:	%{name}-qt4 = %{version}-%{release}
 
 %description driver-qt4
-Tk driver for PLplot library. Supports Qt4 output.
+Qt4 driver for PLplot library. Supports Qt4 output.
 
 %description driver-qt4 -l pl.UTF-8
 Sterownik Qt4 dla biblioteki PLplot. Obsługuje wyjście poprzez Qt4.
+
+%package driver-wxwidgets
+Summary:	wxWidgets driver for PLplot library
+Summary(pl.UTF-8):	Sterownik wxWidgets dla biblioteki PLplot
+Group:		Libraries
+Requires:	%{name}-wxWidgets = %{version}-%{release}
+
+%description driver-wxwidgets
+wxWidgets driver for PLplot library. Supports wxWidgets output.
+
+%description driver-wxwidgets -l pl.UTF-8
+Sterownik wxWidgets dla biblioteki PLplot. Obsługuje wyjście poprzez
+wxWidgets.
 
 %package driver-xwin
 Summary:	xwin driver for PLplot library
@@ -349,6 +386,33 @@ PLplot library - Qt4 binding development files.
 %description qt4-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla Qt4.
 
+%package wxwidgets
+Summary:	PLplot library - wxWidgets binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla wxWidgets
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	wxGTK2-unicode >= 2.6.0
+
+%description wxwidgets
+PLplot library - wxwidgets binding.
+
+%description wxwidgets -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla wxWidgets.
+
+%package wxwidgets-devel
+Summary:	PLplot library - wxWidgets binding development files
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla wxWidgets
+Group:		Development/Libraries
+Requires:	%{name}-wxwidgets = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	wxGTK2-unicode-devel >= 2.6.0
+
+%description wxwidgets-devel
+PLplot library - wxWidgets binding development files.
+
+%description wxwidgets-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiązania dla wxWidgets.
+
 %package octave
 Summary:	PLplot library - Octave binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka Octave
@@ -379,6 +443,7 @@ Summary:	PLplot library - Python binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-tcl = %{version}-%{release}
 %pyrequires_eq	python-libs
 Requires:	python-numpy
 
@@ -421,6 +486,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 mkdir build
@@ -448,7 +514,8 @@ cd build
 	-DPLD_plmeta=ON \
 	-DPLD_cgm=ON \
 	-DPLD_pstex=ON \
-	-DwxWidgets_CONFIG_EXECUTABLE=wx-gtk2-unicode-config \
+	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
+	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF}
 
@@ -498,6 +565,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	qt4 -p /sbin/ldconfig
 %postun	qt4 -p /sbin/ldconfig
+
+%post	wxwidgets -p /sbin/ldconfig
+%postun	wxwidgets -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -556,6 +626,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ntk.so
 %{_libdir}/plplot%{version}/driversd/ntk.driver_info
 
+%files driver-psttf
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/psttf.so
+%{_libdir}/plplot%{version}/driversd/psttf.driver_info
+
 %files driver-tk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tk.so
@@ -567,6 +642,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/qt.so
 %{_libdir}/plplot%{version}/driversd/qt.driver_info
+
+%files driver-wxwidgets
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/wxwidgets.so
+%{_libdir}/plplot%{version}/driversd/wxwidgets.driver_info
 
 %files driver-xwin
 %defattr(644,root,root,755)
@@ -716,6 +796,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libplplotqtd.so
 %{_includedir}/plplot/qt.h
 %{_pkgconfigdir}/plplotd-qt.pc
+
+%files wxwidgets
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotwxwidgetsd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotwxwidgetsd.so.0
+
+%files wxwidgets-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotwxwidgetsd.so
+%{_includedir}/plplot/wxPLplot*.h
+%{_pkgconfigdir}/plplotd-wxwidgets.pc
 
 %files octave
 %defattr(644,root,root,755)
