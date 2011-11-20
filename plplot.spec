@@ -1,9 +1,12 @@
 # TODO:
 # - java, itcl, perl_pdl - why disabled?
-# - D binding
-# - AQT (AquaTerm/AQTAdapter.h)
-# - svgalib (bcond)?
-# - system libharu/hpdf (libhpdf, hpdf.h)
+# - bindings: ada, d, gnome2, java, lua, ocaml, tk-x-plat?
+# NOTES:
+# aqt driver is Darwin-only
+# wingcc driver is Windows-only
+# gd driver is not maintained
+# dg300,gcw,gnome,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek are retired
+# pstex deprecated in favour of psttf and pscairo
 #
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
@@ -37,13 +40,13 @@ BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-c++
 BuildRequires:	gcc-fortran
-#BuildRequires:	gd-devel
 %{?with_itcl:BuildRequires:	itcl-devel}
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	lapack-devel
 BuildRequires:	libLASi-devel
 %{?with_gnome2:BuildRequires:	libgnomeprintui-devel >= 2.2}
+BuildRequires:	libharu-devel >= 2.1.0
 BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
@@ -129,6 +132,20 @@ ntk (new tk) driver for PLplot library. It supports Tcl/Tk output.
 Sterownik ntk (new tk) dla biblioteki PLplot. Obsługuje wyjście
 poprzez Tcl/Tk.
 
+%package driver-pdf
+Summary:	pdf driver for PLplot library
+Summary(pl.UTF-8):	Sterownik pdf dla biblioteki PLplot
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	libharu >= 2.1.0
+
+%description driver-pdf
+pdf driver for PLplot library. It's PDF driver using Haru library.
+
+%description driver-pdf -l pl.UTF-8
+Sterownik pdf dla biblioteki PLplot. Jest to sterownik PDF
+wykorzystujący bibliotekę Haru.
+
 %package driver-psttf
 Summary:	psttf driver for PLplot library
 Summary(pl.UTF-8):	Sterownik psttf dla biblioteki PLplot
@@ -186,7 +203,7 @@ Sterownik Qt4 dla biblioteki PLplot. Obsługuje wyjście poprzez Qt4.
 Summary:	wxWidgets driver for PLplot library
 Summary(pl.UTF-8):	Sterownik wxWidgets dla biblioteki PLplot
 Group:		Libraries
-Requires:	%{name}-wxWidgets = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description driver-wxwidgets
 wxWidgets driver for PLplot library. Supports wxWidgets output.
@@ -509,10 +526,10 @@ cd build
 	-DENABLE_ada=OFF \
 	-DENABLE_itcl=%{!?with_itcl:OFF}%{?with_itcl:ON} \
 	-DENABLE_itk=%{!?with_itcl:OFF}%{?with_itcl:ON} \
-	-DHAVE_PTHREAD=ON \
-	-DPLD_ntk=ON \
-	-DPLD_plmeta=ON \
 	-DPLD_cgm=ON \
+	-DPLD_ntk=ON \
+	-DPLD_pdf=ON \
+	-DPLD_plmeta=ON \
 	-DPLD_pstex=ON \
 	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
 	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
@@ -625,6 +642,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ntk.so
 %{_libdir}/plplot%{version}/driversd/ntk.driver_info
+
+%files driver-pdf
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pdf.so
+%{_libdir}/plplot%{version}/driversd/pdf.driver_info
 
 %files driver-psttf
 %defattr(644,root,root,755)
