@@ -1,5 +1,5 @@
 # TODO:
-# - java, itcl, perl_pdl - why disabled?
+# - java, perl_pdl - why disabled?
 # - bindings: ada, d, gnome2, java, lua, ocaml, tk-x-plat?
 # NOTES:
 # aqt driver is Darwin-only
@@ -12,7 +12,7 @@
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_with	java		# build Java binding
-%bcond_with	itcl		# build iTCL binding
+%bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
@@ -40,7 +40,8 @@ BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
 BuildRequires:	gcc-c++
 BuildRequires:	gcc-fortran
-%{?with_itcl:BuildRequires:	itcl-devel}
+%{?with_itcl:BuildRequires:	itcl-devel >= 3.4.1}
+%{?with_itcl:BuildRequires:	itk-devel >= 3.4}
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	lapack-devel
@@ -67,6 +68,7 @@ BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt4-build
 BuildRequires:	qt4-qmake
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
 BuildRequires:	sip
 BuildRequires:	swig
@@ -562,6 +564,10 @@ mv $RPM_BUILD_ROOT%{_libdir}/java/plplot/examples \
 mv $RPM_BUILD_ROOT%{_libdir}/java/plplot/core/README.javaAPI installed-docs
 %endif
 
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -847,10 +853,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_plplotcmodule.so
 %attr(755,root,root) %{py_sitedir}/plplot_widgetmodule.so
-%{py_sitedir}/Plframe.py
-%{py_sitedir}/plplotc.py
-%{py_sitedir}/plplot.py
-%{py_sitedir}/TclSup.py
+%{py_sitedir}/Plframe.py[co]
+%{py_sitedir}/plplotc.py[co]
+%{py_sitedir}/plplot.py[co]
+%{py_sitedir}/TclSup.py[co]
 
 %files -n python-plplot-qt4
 %defattr(644,root,root,755)
