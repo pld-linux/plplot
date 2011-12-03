@@ -11,7 +11,7 @@
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
-%bcond_with	java		# build Java binding
+%bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
@@ -44,6 +44,7 @@ BuildRequires:	gcc-fortran
 %{?with_itcl:BuildRequires:	itk-devel >= 3.4}
 BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jdk}
+%{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	lapack-devel
 BuildRequires:	libLASi-devel
 %{?with_gnome2:BuildRequires:	libgnomeprintui-devel >= 2.2}
@@ -510,9 +511,14 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %build
 mkdir build
 cd build
+# NOTE: no %{_libdir}/jni in PLD, use plain %{_libdir}
 %cmake .. \
 %if %{with java}
-	-DJAVA_HOME=/usr/%{_lib}/java \
+	-DCMAKE_Java_RUNTIME=%{java} \
+	-DCMAKE_Java_COMPILER=%{javac} \
+	-DCMAKE_Java_ARCHIVE=%{jar} \
+	-DJAR_DIR=%{_javadir} \
+	-DJAVAWRAPPER_DIR=%{_libdir} \
 %else
 	-DENABLE_java=OFF \
 %endif
@@ -538,10 +544,6 @@ cd build
 	-DwxWidgets_USE_UNICODE=ON \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF}
 
-#        -DCMAKE_Java_RUNTIME=$(JAVA_HOME)/bin/java \
-#        -DCMAKE_Java_COMPILER=$(JAVA_HOME)/bin/javac \
-#        -DCMAKE_Java_ARCHIVE=$(JAVA_HOME)/bin/jar
-
 %{__make}
 
 %install
@@ -556,13 +558,6 @@ mv $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
 
 rm -rf installed-docs
 mv $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
-
-%if %{with java}
-# java must stay in libdir - JNI wrapper included
-mv $RPM_BUILD_ROOT%{_libdir}/java/plplot/examples \
-	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/java
-mv $RPM_BUILD_ROOT%{_libdir}/java/plplot/core/README.javaAPI installed-docs
-%endif
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -777,11 +772,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with java}
 %files java
 %defattr(644,root,root,755)
-%dir %{_libdir}/java/plplot
-%dir %{_libdir}/java/plplot/core
-%attr(755,root,root) %{_libdir}/java/plplot/core/*.so
-%{_libdir}/java/plplot/core/*.class
-%{_libdir}/java/plplot/core/*.java
+%attr(755,root,root) %{_libdir}/plplotjavac_wrap.so
+%{_javadir}/plplot.jar
 
 %files java-devel
 %defattr(644,root,root,755)
