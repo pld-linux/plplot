@@ -1,6 +1,6 @@
 # TODO:
-# - java, perl_pdl - why disabled?
-# - bindings: ada, d, gnome2, java, lua, ocaml, tk-x-plat?
+# - perl_pdl - why disabled?
+# - bindings: ada, d, gnome2, ocaml, tk-x-plat?
 # NOTES:
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
@@ -13,6 +13,7 @@
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
+%bcond_without	lua		# Lua binding
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
@@ -53,6 +54,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
+%{?with_lua:BuildRequires:	lua51-devel >= 5.1}
 BuildRequires:	octave-devel >= 2:3.4.2
 BuildRequires:	pango-devel
 %{?with_perl_pdl:BuildRequires:	perl-PDL}
@@ -458,6 +460,19 @@ PLplot library - examples for Octave binding.
 %description octave-examples -l pl.UTF-8
 Biblioteka PLplot - przykłady do wiązania dla języka Octave.
 
+%package -n lua-plplot
+Summary:	Lua binding for PLplot library
+Summary(pl.UTF-8):	Wiązanie języka Lua do biblioteki PLplot
+Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
+Requires:	lua51-libs >= 5.1
+
+%description -n lua-plplot
+Lua binding for PLplot library.
+
+%description -n lua-plplot -l pl.UTF-8
+Wiązanie języka Lua do biblioteki PLplot.
+
 %package -n python-plplot
 Summary:	PLplot library - Python binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
@@ -522,6 +537,12 @@ cd build
 %else
 	-DENABLE_java=OFF \
 %endif
+%if %{with lua}
+	-DENABLE_lua=ON \
+	-DLUA_EXECUTABLE=%{_bindir}/lua51 \
+%else
+	-DENABLE_lua=OFF \
+%endif
 	-DF77_INCLUDE_DIR=%{_includedir}/plplot \
 	-DF95_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
@@ -530,10 +551,9 @@ cd build
 	-DUSE_RPATH=OFF \
 	-DENABLE_tk=ON \
 	-DENABLE_ocaml=OFF \
-	-DENABLE_lua=OFF \
 	-DENABLE_ada=OFF \
-	-DENABLE_itcl=%{!?with_itcl:OFF}%{?with_itcl:ON} \
-	-DENABLE_itk=%{!?with_itcl:OFF}%{?with_itcl:ON} \
+	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
+	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DPLD_cgm=ON \
 	-DPLD_ntk=ON \
 	-DPLD_pdf=ON \
@@ -840,6 +860,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_octave.sh
 %{_examplesdir}/%{name}-%{version}/octave
+
+%files -n lua-plplot
+%defattr(644,root,root,755)
+%dir %{_libdir}/lua/5.1/plplot
+%attr(755,root,root) %{_libdir}/lua/5.1/plplot/plplotluac.so
+%{_examplesdir}/%{name}-%{version}/lua
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_lua.sh
 
 %files -n python-plplot
 %defattr(644,root,root,755)
