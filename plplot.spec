@@ -613,7 +613,7 @@ cd build
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
 	-DUSE_RPATH=OFF \
 	-DENABLE_tk=ON \
-	-DENABLE_ocaml=%{?with_itcl:ON}%{!?with_itcl:OFF} \
+	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
 	-DENABLE_ada=OFF \
 	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
