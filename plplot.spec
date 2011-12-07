@@ -1,6 +1,6 @@
 # TODO:
 # - perl_pdl - why disabled?
-# - bindings: ada, d, gnome2, ocaml, tk-x-plat?
+# - bindings: ada, d, gnome2, tk-x-plat?
 # NOTES:
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
@@ -14,6 +14,7 @@
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
+%bcond_without	ocaml		# OCaml binding
 #
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
@@ -84,6 +85,13 @@ BuildRequires:	wxGTK2-unicode-devel >= 2.6.0
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
+%if %{with ocaml}
+BuildRequires:	ocaml
+BuildRequires:	ocaml-cairo-devel >= 1.2.0
+BuildRequires:	ocaml-camlidl
+BuildRequires:	ocaml-findlib
+BuildRequires:	ocaml-lablgtk2-devel
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
@@ -473,6 +481,61 @@ Lua binding for PLplot library.
 %description -n lua-plplot -l pl.UTF-8
 Wiązanie języka Lua do biblioteki PLplot.
 
+%package -n ocaml-plplot
+Summary:	OCaml binding for PLplot library
+Summary(pl.UTF-8):	Wiązanie języka OCaml do biblioteki PLplot
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+%requires_eq	ocaml-runtime
+
+%description -n ocaml-plplot
+OCaml binding for PLplot library.
+
+%description -n ocaml-plplot -l pl.UTF-8
+Wiązanie języka OCaml do biblioteki PLplot.
+
+%package -n ocaml-plplot-devel
+Summary:	Development files for OCaml binding for PLplot library
+Summary(pl.UTF-8):	Wiązanie języka OCaml do biblioteki PLplot - pliki programistyczne
+Group:		Development/Libraries
+Requires:	ocaml-plplot = %{version}-%{release}
+%requires_eq	ocaml
+
+%description -n ocaml-plplot-devel
+Development files for OCaml binding for PLplot library.
+
+%description -n ocaml-plplot-devel -l pl.UTF-8
+Wiązanie języka OCaml do biblioteki PLplot - pliki programistyczne.
+
+%package -n ocaml-plcairo
+Summary:	PLcairo - Cairo extras for OCaml binding for PLplot library
+Summary(pl.UTF-8):	PLcairo - dodatki Cairo do wiązania języka OCaml do biblioteki PLplot
+Group:		Libraries
+Requires:	ocaml-plplot = %{version}-%{release}
+Requires:	ocaml-cairo
+%requires_eq	ocaml-runtime
+
+%description -n ocaml-plcairo
+PLcairo - Cairo extras for OCaml binding for PLplot library.
+
+%description -n ocaml-plcairo -l pl.UTF-8
+PLcairo - dodatki Cairo do wiązania języka OCaml do biblioteki PLplot.
+
+%package -n ocaml-plcairo-devel
+Summary:	Development files for PLcairo OCaml library
+Summary(pl.UTF-8):	Pliki programistyczne biblioteki OCamla PLcairo
+Group:		Development/Libraries
+Requires:	ocaml-cairo-devel
+Requires:	ocaml-plcairo = %{version}-%{release}
+Requires:	ocaml-plplot-devel = %{version}-%{release}
+%requires_eq	ocaml
+
+%description -n ocaml-plcairo-devel
+Development files for PLcairo OCaml library.
+
+%description -n ocaml-plcairo-devel -l pl.UTF-8
+Pliki programistyczne biblioteki OCamla PLcairo.
+
 %package -n python-plplot
 Summary:	PLplot library - Python binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
@@ -550,7 +613,7 @@ cd build
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
 	-DUSE_RPATH=OFF \
 	-DENABLE_tk=ON \
-	-DENABLE_ocaml=OFF \
+	-DENABLE_ocaml=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_ada=OFF \
 	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
@@ -861,12 +924,43 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_octave.sh
 %{_examplesdir}/%{name}-%{version}/octave
 
+%if %{with lua}
 %files -n lua-plplot
 %defattr(644,root,root,755)
 %dir %{_libdir}/lua/5.1/plplot
 %attr(755,root,root) %{_libdir}/lua/5.1/plplot/plplotluac.so
 %{_examplesdir}/%{name}-%{version}/lua
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_lua.sh
+%endif
+
+%if %{with ocaml}
+%files -n ocaml-plplot
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllplplot_stubs.so
+
+%files -n ocaml-plplot-devel
+%dir %{_libdir}/ocaml/plplot
+%{_libdir}/ocaml/plplot/META
+%{_libdir}/ocaml/plplot/libplplot_stubs.a
+%{_libdir}/ocaml/plplot/plplot.a
+%{_libdir}/ocaml/plplot/plplot.cm*
+%{_libdir}/ocaml/plplot/plplot.mli
+%{_pkgconfigdir}/plplotd-ocaml.pc
+%{_examplesdir}/%{name}-%{version}/ocaml
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ocaml.sh
+
+%files -n ocaml-plcairo
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllplcairo_stubs.so
+
+%files -n ocaml-plcairo-devel
+%dir %{_libdir}/ocaml/plcairo
+%{_libdir}/ocaml/plcairo/META
+%{_libdir}/ocaml/plcairo/libplcairo_stubs.a
+%{_libdir}/ocaml/plcairo/plcairo.a
+%{_libdir}/ocaml/plcairo/plcairo.cm*
+%{_libdir}/ocaml/plcairo/plcairo.mli
+%endif
 
 %files -n python-plplot
 %defattr(644,root,root,755)
