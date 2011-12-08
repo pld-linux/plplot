@@ -1,16 +1,17 @@
 # TODO:
 # - perl_pdl - why disabled?
-# - bindings: ada, d, gnome2, tk-x-plat?
+# - bindings: d, gnome2, tk-x-plat?
 # NOTES:
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
 # gd driver is not maintained
-# dg300,gcw,gnome,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek are retired
-# pstex deprecated in favour of psttf and pscairo
+# dg300,gcw,gnome,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek drivers are retired
+# pstex driver deprecated in favour of psttf and pscairo
 #
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
+%bcond_without	ada		# Ada binding
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
@@ -30,6 +31,7 @@ Patch1:		%{name}-qhull.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-cmake.patch
 Patch4:		%{name}-nofonts.patch
+Patch5:		%{name}-adadirs.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel
 BuildRequires:	QtSvg-devel
@@ -40,6 +42,7 @@ BuildRequires:	docbook-style-dsssl
 BuildRequires:	fftw3-devel
 BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
+%{?with_ada:BuildRequires:	gcc-ada >= 5:4.1}
 BuildRequires:	gcc-c++
 BuildRequires:	gcc-fortran
 %{?with_itcl:BuildRequires:	itcl-devel >= 3.4.1}
@@ -96,6 +99,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
 %define		octave_m_sitedir	%(octave-config --m-site-dir)
+
+%define		gcc_target	%(%{__cc} -dumpmachine)
+%define		ada_incdir	%{_libdir}/%{gcc_target}/%{cc_version}/adainclude
+%define		ada_objdir	%{_libdir}/%{gcc_target}/%{cc_version}/adalib
 
 %description
 PLplot is a library of functions that are useful for making scientific
@@ -334,6 +341,31 @@ PLplot library - FORTRAN 95 binding development files.
 %description f95-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN
 95.
+
+%package ada
+Summary:	PLplot library - Ada binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Ady
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description ada
+PLplot library - Ada binding.
+
+%description ada -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla Ady.
+
+%package ada-devel
+Summary:	PLplot library - Ada binding development files
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Ady
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-ada = %{version}-%{release}
+
+%description ada-devel
+PLplot library - Ada binding development files.
+
+%description ada-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiązania dla Ady.
 
 %package java
 Summary:	PLplot library - Java binding
@@ -585,12 +617,20 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 mkdir build
 cd build
 # NOTE: no %{_libdir}/jni in PLD, use plain %{_libdir}
 %cmake .. \
+%if %{with ada}
+	-DENABLE_ada=ON \
+	-DADA_INCLUDE_PATH=%{ada_incdir} \
+	-DADA_LIB_PATH=%{ada_objdir} \
+%else
+	-DENABLE_ada=OFF \
+%endif
 %if %{with java}
 	-DCMAKE_Java_RUNTIME=%{java} \
 	-DCMAKE_Java_COMPILER=%{javac} \
@@ -614,7 +654,6 @@ cd build
 	-DUSE_RPATH=OFF \
 	-DENABLE_tk=ON \
 	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
-	-DENABLE_ada=OFF \
 	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DPLD_cgm=ON \
@@ -660,6 +699,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	f95 -p /sbin/ldconfig
 %postun	f95 -p /sbin/ldconfig
+
+%post	ada -p /sbin/ldconfig
+%postun	ada -p /sbin/ldconfig
 
 %post	tcl -p /sbin/ldconfig
 %postun	tcl -p /sbin/ldconfig
@@ -851,6 +893,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/plplotd-f95.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f95.sh
 %{_examplesdir}/%{name}-%{version}/f95
+
+%if %{with ada}
+%files ada
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotadad.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotadad.so.0
+
+%files ada-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libplplotadad.so
+%{ada_objdir}/plplotadad
+%{ada_incdir}/plplotadad
+%{_pkgconfigdir}/plplotd-ada.pc
+%{_examplesdir}/%{name}-%{version}/ada
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ada.sh
+%endif
 
 %if %{with java}
 %files java
