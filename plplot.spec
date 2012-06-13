@@ -58,6 +58,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
+%{?with_lua:BuildRequires:	lua51 >= 5.1}
 %{?with_lua:BuildRequires:	lua51-devel >= 5.1}
 BuildRequires:	octave-devel >= 2:3.4.2
 BuildRequires:	pango-devel
