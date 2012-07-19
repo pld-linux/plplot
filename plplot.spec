@@ -32,6 +32,7 @@ Patch2:		%{name}-link.patch
 Patch3:		%{name}-cmake.patch
 Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
+Patch6:		%{name}-ocamldir.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel
 BuildRequires:	QtSvg-devel
@@ -619,6 +620,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 mkdir build
