@@ -21,7 +21,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.9.9
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -103,8 +103,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		octave_m_sitedir	%(octave-config --m-site-dir)
 
 %define		gcc_target	%(%{__cc} -dumpmachine)
-%define		ada_incdir	%{_libdir}/%{gcc_target}/%{cc_version}/adainclude
-%define		ada_objdir	%{_libdir}/%{gcc_target}/%{cc_version}/adalib
+%define		ada_incdir	%{_libdir}/gcc/%{gcc_target}/%{cc_version}/adainclude
+%define		ada_objdir	%{_libdir}/gcc/%{gcc_target}/%{cc_version}/adalib
 
 %description
 PLplot is a library of functions that are useful for making scientific
