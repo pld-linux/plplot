@@ -12,7 +12,7 @@
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_without	ada		# Ada binding
-%bcond_with	java		# Java binding
+%bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
 %bcond_without	ocaml		# OCaml binding
