@@ -1,4 +1,5 @@
 # TODO:
+# - fix building with installed plplot-devel (tries to use installed drivers for dyn_test)
 # - perl_pdl - why disabled?
 # - bindings: d, gnome2, tk-x-plat?
 # NOTES:
@@ -98,6 +99,7 @@ BuildRequires:	ocaml-camlidl
 BuildRequires:	ocaml-findlib
 BuildRequires:	ocaml-lablgtk2-devel
 %endif
+BuildConflicts:	plplot-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
