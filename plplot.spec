@@ -72,6 +72,7 @@ BuildRequires:	pango-devel
 BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
+BuildRequires:	python-sip-devel
 %{?with_gnome2:BuildRequires:	python-pygtk-devel >= 2:2.13.0}
 BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt4-build
@@ -669,6 +670,7 @@ cd build
 	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
 	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON \
+	-DPython_ADDITIONAL_VERSIONS=2.7 \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF}
 
 %{__make}
