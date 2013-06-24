@@ -9,3 +9,18 @@
    install(TARGETS csironn
      EXPORT export_plplot
      ARCHIVE DESTINATION ${LIB_DIR}
+--- plplot-5.9.9/bindings/f77/CMakeLists.txt.orig	2011-10-13 02:43:01.000000000 +0200
++++ plplot-5.9.9/bindings/f77/CMakeLists.txt	2013-06-24 14:36:00.674116925 +0200
+@@ -205,10 +205,10 @@
+ 
+   if(STATIC_OPTS)
+     add_library(plplotf77opts${LIB_TAG} STATIC ${plplotf77opts${LIB_TAG}_LIB_SRCS})
+-    target_link_libraries(plplotf77${LIB_TAG} plplotf77c${LIB_TAG})
++    target_link_libraries(plplotf77${LIB_TAG} plplotf77c${LIB_TAG} ssp)
+     target_link_libraries(plplotf77opts${LIB_TAG} plplotf77${LIB_TAG} plplotf77c${LIB_TAG})
+   else(STATIC_OPTS)
+-    target_link_libraries(plplotf77${LIB_TAG}  plplotf77c${LIB_TAG})
++    target_link_libraries(plplotf77${LIB_TAG}  plplotf77c${LIB_TAG} ssp)
+   endif(STATIC_OPTS)
+ 
+   if(USE_RPATH)
