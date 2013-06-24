@@ -16,11 +16,11 @@
    if(STATIC_OPTS)
      add_library(plplotf77opts${LIB_TAG} STATIC ${plplotf77opts${LIB_TAG}_LIB_SRCS})
 -    target_link_libraries(plplotf77${LIB_TAG} plplotf77c${LIB_TAG})
-+    target_link_libraries(plplotf77${LIB_TAG} plplotf77c${LIB_TAG} ssp)
++    target_link_libraries(plplotf77${LIB_TAG} plplotf77c${LIB_TAG} c)
      target_link_libraries(plplotf77opts${LIB_TAG} plplotf77${LIB_TAG} plplotf77c${LIB_TAG})
    else(STATIC_OPTS)
 -    target_link_libraries(plplotf77${LIB_TAG}  plplotf77c${LIB_TAG})
-+    target_link_libraries(plplotf77${LIB_TAG}  plplotf77c${LIB_TAG} ssp)
++    target_link_libraries(plplotf77${LIB_TAG}  plplotf77c${LIB_TAG} c)
    endif(STATIC_OPTS)
  
    if(USE_RPATH)
