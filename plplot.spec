@@ -892,6 +892,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.11
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
+%attr(755,root,root) %{_libdir}/libplplottcltk_Maind.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltk_Maind.so.0
 %{_datadir}/plplot%{version}/*.tcl
 %{_datadir}/plplot%{version}/tcl
 %{_mandir}/man1/pltcl.1*
@@ -901,10 +903,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so
+%attr(755,root,root) %{_libdir}/libplplottcltk_Maind.so
 %{_includedir}/plplot/pltcl.h
 %{_includedir}/plplot/pltk.h
 %{_includedir}/plplot/tclMatrix.h
 %{_pkgconfigdir}/plplotd-tcl.pc
+%{_pkgconfigdir}/plplotd-tcl_Main.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_tcl.sh
 %{_examplesdir}/%{name}-%{version}/tcl
 %{_examplesdir}/%{name}-%{version}/tk
