@@ -1,0 +1,90 @@
+--- plplot-5.10.0/cmake/modules/tcl-related.cmake~	2014-01-12 04:12:25.000000000 +0100
++++ plplot-5.10.0/cmake/modules/tcl-related.cmake	2014-03-17 09:38:33.214584768 +0100
+@@ -268,45 +268,10 @@
+       message(STATUS "Looking for wish - found")
+       message(STATUS "TK_WISH = ${TK_WISH}")
+       if(NOT PLPLOT_TK_VERSION)
+-	file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/CheckTK_VERSION.tcl "puts -nonewline [package require Tk]; exit")
+-	# Find Tk version via wish or fail.
+-	execute_process(
+-	  COMMAND ${TK_WISH} ${CMAKE_CURRENT_BINARY_DIR}/CheckTK_VERSION.tcl
+-	  RESULT_VARIABLE TK_RC
+-	  OUTPUT_VARIABLE _plplot_tk_version
+-	  )
+-	if(NOT TK_RC)
+-	  message(STATUS "Looking for Tk version with wish - found")
+-	  # Store result in cached variable so it will be remembered
+-          # when cmake is re-run, but use type of STRING rather than
+-          # INTERNAL to allow users to specify the value with a
+-          # -DPLPLOT_TK_VERSION:STRING=<whatever> on the command
+-          # line for those rare cases when "package require Tk"
+-          # would error out due to some wish issue.
+-	  set(PLPLOT_TK_VERSION ${_plplot_tk_version}
++	  set(PLPLOT_TK_VERSION ${PLPLOT_TCL_VERSION}
+ 	    CACHE STRING "Tk version found by wish"
+ 	    )
+ 
+-	  if(PLPLOT_TCL_VERSION STREQUAL PLPLOT_TK_VERSION)
+-	    # Cross check that wish finds the same Tcl version as tclsh.
+-	    execute_process(
+-	      COMMAND ${TK_WISH} ${CMAKE_CURRENT_BINARY_DIR}/CheckTCL_VERSION.tcl
+-	      RESULT_VARIABLE TCL_RC
+-	      OUTPUT_VARIABLE _plplot_tcl_version
+-	      )
+-
+-	    if(NOT TCL_RC AND _plplot_tcl_version STREQUAL PLPLOT_TCL_VERSION)
+-	      # Cross check that tclsh finds the same Tk version as wish.
+-	      execute_process(
+-		COMMAND ${TCL_TCLSH} ${CMAKE_CURRENT_BINARY_DIR}/CheckTK_VERSION.tcl
+-		RESULT_VARIABLE TK_RC
+-		OUTPUT_VARIABLE _plplot_tk_version
+-		)
+-	      if(NOT TK_RC AND _plplot_tk_version STREQUAL PLPLOT_TK_VERSION)
+-		message(STATUS "Tcl and Tk versions found by both tclsh and wish are identical")
+-		# Sanity checking of Tk version consistency _if_ a Tk
+-		# version string can be extracted from the Tk library
+-		# name.
+ 		get_filename_component(library_name ${TK_LIBRARY} NAME)
+ 		string(REGEX MATCH "[0-9]+[.]?[0-9]+" library_version ${library_name})
+ 		if(library_version)
+@@ -323,40 +288,6 @@
+    library name is not consistent with PLPLOT_TK_VERSION = ${PLPLOT_TK_VERSION}")
+ 		  endif(NOT truncated_version STREQUAL library_version)
+ 		endif(library_version)
+-	      elseif(TK_RC)
+-		message(STATUS "Looking for Tk version with tclsh - not found")
+-		message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-		set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	      else(NOT TK_RC AND _plplot_tk_version STREQUAL PLPLOT_TK_VERSION)
+-		message(STATUS "Tk version = ${_plplot_tk_version} found by tclsh is not consistent with
+-   Tk version = ${PLPLOT_TK_VERSION} found by wish"
+-		  )
+-		message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-		set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	      endif(NOT TK_RC AND _plplot_tk_version STREQUAL PLPLOT_TK_VERSION)
+-	    elseif(TCL_RC)
+-	      message(STATUS "Looking for Tcl version with wish - not found")
+-	      message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-	      set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	    else(NOT TCL_RC AND _plplot_tcl_version STREQUAL PLPLOT_TCL_VERSION)
+-	      message(STATUS "Tcl version = ${_plplot_tcl_version} found by wish is not consistent with
+-   Tcl version = ${PLPLOT_TCL_VERSION} found by tclsh"
+-		)
+-	      message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-	      set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	    endif(NOT TCL_RC AND _plplot_tcl_version STREQUAL PLPLOT_TCL_VERSION)
+-	  else(PLPLOT_TCL_VERSION STREQUAL PLPLOT_TK_VERSION)
+-	    message(STATUS "Tk version = ${PLPLOT_TK_VERSION} found by wish is not consistent with 
+-   Tcl version = ${PLPLOT_TCL_VERSION} found by tclsh"
+-	      )
+-	    message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-	    set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	  endif(PLPLOT_TCL_VERSION STREQUAL PLPLOT_TK_VERSION)
+-	else(NOT TK_RC)
+-	  message(STATUS "Looking for Tk version with wish - not found")
+-	  message(STATUS "WARNING: setting ENABLE_tk to OFF")
+-	  set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
+-	endif(NOT TK_RC)
+       else(NOT PLPLOT_TK_VERSION)
+ 	set(TK_RC 0)
+       endif(NOT PLPLOT_TK_VERSION)

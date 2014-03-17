@@ -29,6 +29,7 @@ Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	ece8c0b4d5cd815968a6d56bed0fbe7b
 Patch0:		%{name}-octave.patch
 Patch1:		%{name}-qhull.patch
+Patch2:		%{name}-no-DISPLAY.patch
 Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
@@ -592,6 +593,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
