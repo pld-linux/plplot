@@ -99,6 +99,7 @@ BuildRequires:	ocaml-lablgtk2-devel
 %endif
 BuildConflicts:	plplot
 BuildConflicts:	plplot-devel
+Obsoletes:	plplot-f77
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
@@ -256,6 +257,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 2.1
 Requires:	qhull-devel
+Obsoletes:	plplot-f77-devel
 Obsoletes:	plplot-static
 
 %description devel
@@ -290,34 +292,6 @@ PLplot library - C++ binding development files.
 
 %description c++-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla C++.
-
-%package f77
-Summary:	PLplot library - FORTRAN 77 binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka FORTRAN 77
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description f77
-PLplot library - FORTRAN 77 binding.
-
-%description f77 -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla języka FORTRAN 77.
-
-%package f77-devel
-Summary:	PLplot library - FORTRAN 77 binding development files
-Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 77
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-Requires:	%{name}-f77 = %{version}-%{release}
-Requires:	gcc-fortran
-Obsoletes:	plplot-f77-static
-
-%description f77-devel
-PLplot library - FORTRAN 77 binding development files.
-
-%description f77-devel -l pl.UTF-8
-Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN
-77.
 
 %package f95
 Summary:	PLplot library - FORTRAN 95 binding
@@ -651,7 +625,6 @@ cd build
 %else
 	-DENABLE_lua=OFF \
 %endif
-	-DF77_INCLUDE_DIR=%{_includedir}/plplot \
 	-DF95_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
@@ -700,9 +673,6 @@ rm -rf $RPM_BUILD_ROOT
 %post	c++ -p /sbin/ldconfig
 %postun	c++ -p /sbin/ldconfig
 
-%post	f77 -p /sbin/ldconfig
-%postun	f77 -p /sbin/ldconfig
-
 %post	f95 -p /sbin/ldconfig
 %postun	f95 -p /sbin/ldconfig
 
@@ -736,7 +706,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
 %attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.11
+%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.12
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
@@ -855,7 +825,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxxd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.10
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.11
 
 %files c++-devel
 %defattr(644,root,root,755)
@@ -865,29 +835,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
 
-%files f77
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotf77cd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf77cd.so.9
-%attr(755,root,root) %{_libdir}/libplplotf77d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf77d.so.9
-
-%files f77-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotf77cd.so
-%attr(755,root,root) %{_libdir}/libplplotf77d.so
-%{_includedir}/plplot/plplot_parameters.h
-%{_pkgconfigdir}/plplotd-f77.pc
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f77.sh
-%{_examplesdir}/%{name}-%{version}/f77
-
 %files f95
 %defattr(644,root,root,755)
 %doc bindings/f95/readme_f95.txt
 %attr(755,root,root) %{_libdir}/libplplotf95cd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95cd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplotf95cd.so.11
 %attr(755,root,root) %{_libdir}/libplplotf95d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95d.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplotf95d.so.11
 
 %files f95-devel
 %defattr(644,root,root,755)
@@ -933,7 +887,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.9
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.11
 %attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
 %{_datadir}/plplot%{version}/*.tcl
@@ -955,8 +909,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files qt4
 %defattr(644,root,root,755)
-%attr(755,root,root) %ghost %{_libdir}/libplplotqtd.so.0
-%attr(755,root,root) %{_libdir}/libplplotqtd.so.0.0.1
+%attr(755,root,root) %ghost %{_libdir}/libplplotqtd.so.1
+%attr(755,root,root) %{_libdir}/libplplotqtd.so.1.0.0
 
 %files qt4-devel
 %defattr(644,root,root,755)
