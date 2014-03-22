@@ -1,18 +1,19 @@
 # TODO:
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
 # - perl_pdl - why disabled?
-# - bindings: d, gnome2, tk-x-plat?
+# - bindings: gnome2, tk-x-plat?
 # NOTES:
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
 # gd driver is not maintained
-# dg300,gcw,gnome,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek drivers are retired
+# dg300,gcw,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek drivers are retired
 # pstex driver deprecated in favour of psttf and pscairo
 #
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# enable perl examples in tests
 %bcond_with	ada		# Ada binding
+%bcond_with	d		# D binding
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
@@ -33,13 +34,15 @@ Patch2:		%{name}-no-DISPLAY.patch
 Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
+Patch7:		%{name}-d.patch
 URL:		http://plplot.sourceforge.net/
-BuildRequires:	QtGui-devel
-BuildRequires:	QtSvg-devel
-BuildRequires:	QtXml-devel
+BuildRequires:	QtGui-devel >= 4
+BuildRequires:	QtSvg-devel >= 4
+BuildRequires:	QtXml-devel >= 4
 BuildRequires:	agg-devel
 BuildRequires:	cmake >= 2.6.4
 BuildRequires:	docbook-style-dsssl
+%{?with_d:BuildRequires:	dmd}
 BuildRequires:	fftw3-devel
 BuildRequires:	fftw3-single-devel
 BuildRequires:	freetype-devel >= 2.1.0
@@ -75,8 +78,8 @@ BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-sip-devel
 %{?with_gnome2:BuildRequires:	python-pygtk-devel >= 2:2.13.0}
 BuildRequires:	qhull-devel >= 2011.1
-BuildRequires:	qt4-build
-BuildRequires:	qt4-qmake
+BuildRequires:	qt4-build >= 4
+BuildRequires:	qt4-qmake >= 4
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
@@ -293,6 +296,18 @@ PLplot library - C++ binding development files.
 
 %description c++-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla C++.
+
+%package d-devel
+Summary:	PLplot library - D binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka D
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description d-devel
+PLplot library - D binding.
+
+%description d-devel -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla języka D.
 
 %package f95
 Summary:	PLplot library - FORTRAN 95 binding
@@ -597,6 +612,10 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
+
+# "Posix" is reserved and can be set only automatically
+#%{__sed} -i -e 's/-version=Posix //' cmake/modules/language_support/cmake/Platform/Linux-dmd.cmake
 
 %build
 mkdir build
@@ -611,6 +630,11 @@ cd build
 	-DADA_LIB_PATH=%{ada_objdir} \
 %else
 	-DENABLE_ada=OFF \
+%endif
+%if %{with d}
+	-DENABLE_d=ON \
+%else
+	-DENABLE_d=OFF \
 %endif
 %if %{with java}
 	-DCMAKE_Java_RUNTIME=%{java} \
@@ -837,6 +861,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
 
+%if %{with d}
+%files d-devel
+%defattr(644,root,root,755)
+%{_libdir}/libplplotdmdd.a
+%{_includedir}/plplot/plplot.d
+%{_pkgconfigdir}/plplotd-d.pc
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_d.sh
+%{_examplesdir}/%{name}-%{version}/d
+%endif
+
 %files f95
 %defattr(644,root,root,755)
 %doc bindings/f95/readme_f95.txt
@@ -860,7 +894,7 @@ rm -rf $RPM_BUILD_ROOT
 %files ada
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotadad.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotadad.so.0
+%attr(755,root,root) %ghost %{_libdir}/libplplotadad.so.1
 
 %files ada-devel
 %defattr(644,root,root,755)
