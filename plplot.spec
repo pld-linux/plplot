@@ -23,7 +23,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.10.0
-Release:	5
+Release:	6
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -73,6 +73,7 @@ BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
 BuildRequires:	python-PyQt4-devel
+BuildRequires:	python-PyQt4-uic
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-sip-devel
