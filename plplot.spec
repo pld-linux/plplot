@@ -97,7 +97,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %if %{with ocaml}
 BuildRequires:	ocaml
 BuildRequires:	ocaml-cairo-devel >= 1.2.0
-BuildRequires:	ocaml-idl
+BuildRequires:	ocaml-idl-devel
 BuildRequires:	ocaml-findlib
 BuildRequires:	ocaml-lablgtk2-devel
 %endif
