@@ -647,7 +647,7 @@ cd build
 %endif
 %if %{with lua}
 	-DENABLE_lua=ON \
-	-DLUA_EXECUTABLE=%{_bindir}/lua51 \
+	-DLUA_EXECUTABLE=%{_bindir}/lua5.1 \
 %else
 	-DENABLE_lua=OFF \
 %endif
