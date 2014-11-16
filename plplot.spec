@@ -23,7 +23,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.10.0
-Release:	3
+Release:	4
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -97,7 +97,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %if %{with ocaml}
 BuildRequires:	ocaml
 BuildRequires:	ocaml-cairo-devel >= 1.2.0
-BuildRequires:	ocaml-camlidl
+BuildRequires:	ocaml-idl
 BuildRequires:	ocaml-findlib
 BuildRequires:	ocaml-lablgtk2-devel
 %endif
