@@ -72,7 +72,7 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
-BuildRequires:	python-PyQt4-devel
+BuildRequires:	sip-PyQt4
 BuildRequires:	python-PyQt4-uic
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
