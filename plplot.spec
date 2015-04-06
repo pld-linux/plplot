@@ -18,12 +18,18 @@
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
 %bcond_without	ocaml		# OCaml binding
+%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
 #
+%ifarch x32
+# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
+%undefine	with_ocaml_opt
+%endif
+
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.10.0
-Release:	7
+Release:	8
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -1003,7 +1009,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ocaml/plplot
 %{_libdir}/ocaml/plplot/META
 %{_libdir}/ocaml/plplot/libplplot_stubs.a
+%if %{with ocaml_opt}
 %{_libdir}/ocaml/plplot/plplot.a
+%endif
 %{_libdir}/ocaml/plplot/plplot.cm*
 %{_libdir}/ocaml/plplot/plplot.mli
 %{_pkgconfigdir}/plplotd-ocaml.pc
@@ -1018,7 +1026,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ocaml/plcairo
 %{_libdir}/ocaml/plcairo/META
 %{_libdir}/ocaml/plcairo/libplcairo_stubs.a
+%if %{with ocaml_opt}
 %{_libdir}/ocaml/plcairo/plcairo.a
+%endif
 %{_libdir}/ocaml/plcairo/plcairo.cm*
 %{_libdir}/ocaml/plcairo/plcairo.mli
 %endif
