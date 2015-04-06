@@ -35,6 +35,7 @@ Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
 Patch7:		%{name}-d.patch
+Patch8:		%{name}-cmake31.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel >= 4
 BuildRequires:	QtSvg-devel >= 4
@@ -614,6 +615,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 # "Posix" is reserved and can be set only automatically
 #%{__sed} -i -e 's/-version=Posix //' cmake/modules/language_support/cmake/Platform/Linux-dmd.cmake
