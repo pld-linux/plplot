@@ -20,8 +20,8 @@
 %bcond_without	ocaml		# OCaml binding
 %bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
 #
-%ifarch x32
-# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
+# not yet available on x32 (ocaml 4.02.1), update when upstream will support it
+%ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
 %endif
 
@@ -29,7 +29,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.10.0
-Release:	8
+Release:	9
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
