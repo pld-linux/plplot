@@ -1,18 +1,18 @@
---- plplot-5.9.9/cmake/modules/instdirs.cmake.orig	2011-10-13 02:43:01.000000000 +0200
-+++ plplot-5.9.9/cmake/modules/instdirs.cmake	2011-12-07 21:03:03.074770218 +0100
-@@ -94,11 +94,13 @@
+--- plplot-5.11.1/cmake/modules/instdirs.cmake.orig	2016-03-10 21:57:48.161215537 +0100
++++ plplot-5.11.1/cmake/modules/instdirs.cmake	2016-03-10 22:00:46.011208074 +0100
+@@ -100,11 +100,13 @@
  
  # Ada source files (*.adb, *.ads) (following recommendations in
  # http://www.ada-france.org/debian/debian-ada-policy.html
--set(ADA_INCLUDE_DIR ${CMAKE_INSTALL_DATADIR}/ada/adainclude/plplotada${LIB_TAG})
+-set(ADA_INCLUDE_DIR ${CMAKE_INSTALL_DATADIR}/ada/adainclude/plplotada)
 +set(ADA_INCLUDE_PATH ${CMAKE_INSTALL_DATADIR}/ada/adainclude CACHE PATH "Ada include path")
-+set(ADA_INCLUDE_DIR ${ADA_INCLUDE_PATH}/plplotada${LIB_TAG})
++set(ADA_INCLUDE_DIR ${ADA_INCLUDE_PATH}/plplotada)
  
  # Ada library information files (*.ali) (following recommendations in
  # http://www.ada-france.org/debian/debian-ada-policy.html
--set(ADA_LIB_DIR ${CMAKE_INSTALL_LIBDIR}/ada/adalib/plplotada${LIB_TAG})
+-set(ADA_LIB_DIR ${CMAKE_INSTALL_LIBDIR}/ada/adalib/plplotada)
 +set(ADA_LIB_PATH ${CMAKE_INSTALL_LIBDIR}/ada/adalib CACHE PATH "Ada library path")
-+set(ADA_LIB_DIR ${ADA_LIB_PATH}/plplotada${LIB_TAG})
++set(ADA_LIB_DIR ${ADA_LIB_PATH}/plplotada)
  
  # Drivers.
- set(DRV_DIR ${CMAKE_INSTALL_LIBDIR}/${PACKAGE}${VERSION}/drivers${LIB_TAG})
+ set(DRV_DIR ${CMAKE_INSTALL_LIBDIR}/${PACKAGE}${PLPLOT_VERSION}/drivers)

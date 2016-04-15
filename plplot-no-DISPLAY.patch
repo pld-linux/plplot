@@ -1,6 +1,6 @@
---- plplot-5.10.0/cmake/modules/tcl-related.cmake~	2014-01-12 04:12:25.000000000 +0100
-+++ plplot-5.10.0/cmake/modules/tcl-related.cmake	2014-03-17 09:38:33.214584768 +0100
-@@ -268,45 +268,10 @@
+--- plplot-5.11.1/cmake/modules/tcl-related.cmake.orig	2015-08-12 19:35:27.000000000 +0200
++++ plplot-5.11.1/cmake/modules/tcl-related.cmake	2016-03-10 21:56:04.514553220 +0100
+@@ -265,45 +265,10 @@
        message(STATUS "Looking for wish - found")
        message(STATUS "TK_WISH = ${TK_WISH}")
        if(NOT PLPLOT_TK_VERSION)
@@ -47,7 +47,7 @@
  		get_filename_component(library_name ${TK_LIBRARY} NAME)
  		string(REGEX MATCH "[0-9]+[.]?[0-9]+" library_version ${library_name})
  		if(library_version)
-@@ -323,40 +288,6 @@
+@@ -320,40 +285,6 @@
     library name is not consistent with PLPLOT_TK_VERSION = ${PLPLOT_TK_VERSION}")
  		  endif(NOT truncated_version STREQUAL library_version)
  		endif(library_version)
@@ -74,7 +74,7 @@
 -	      set(ENABLE_tk OFF CACHE BOOL "Enable Tk bindings" FORCE)
 -	    endif(NOT TCL_RC AND _plplot_tcl_version STREQUAL PLPLOT_TCL_VERSION)
 -	  else(PLPLOT_TCL_VERSION STREQUAL PLPLOT_TK_VERSION)
--	    message(STATUS "Tk version = ${PLPLOT_TK_VERSION} found by wish is not consistent with 
+-	    message(STATUS "Tk version = ${PLPLOT_TK_VERSION} found by wish is not consistent with
 -   Tcl version = ${PLPLOT_TCL_VERSION} found by tclsh"
 -	      )
 -	    message(STATUS "WARNING: setting ENABLE_tk to OFF")

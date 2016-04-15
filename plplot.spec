@@ -1,24 +1,32 @@
 # TODO:
+# - fix itk detection (import requires $DISPLAY, so use force or file presence)
+# - ocaml-cairo (requires cairo2 module)
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
+# - ada build (on ix86 at least), enable by default?
 # - perl_pdl - why disabled?
 # - bindings: gnome2, tk-x-plat?
-# NOTES:
+# NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
+# cgm driver has severe valgrind issues (as of 5.11.1)
 # gd driver is not maintained
-# dg300,gcw,hpgl,impress,linuxvga,ljii,ljiip,pbm,tek drivers are retired
+# plmeta is disabled due to "some issues" (as of 5.11.1)
 # pstex driver deprecated in favour of psttf and pscairo
 #
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
-%bcond_with	perl_pdl	# enable perl examples in tests
+%bcond_with	perl_pdl	# Perl examples in tests
 %bcond_with	ada		# Ada binding
 %bcond_with	d		# D binding
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
 %bcond_without	ocaml		# OCaml binding
-%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
+%bcond_with	ocaml_cairo	# OCaml-Cairo component (requires cairo2 module)
+%bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
+%bcond_without	octave		# Octave bindings
+%bcond_with	cgm		# CGM driver, libnistcd library
+%bcond_with	plmeta		# plmeta driver, plrender program, {plm2gir,plpr} scripts
 #
 # not yet available on x32 (ocaml 4.02.1), update when upstream will support it
 %ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
@@ -28,12 +36,12 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.10.0
-Release:	13
+Version:	5.11.1
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	ece8c0b4d5cd815968a6d56bed0fbe7b
+# Source0-md5:	7a3dbbe49a00f925b095bc06cadbaf63
 Patch0:		%{name}-octave.patch
 Patch1:		%{name}-qhull.patch
 Patch2:		%{name}-no-DISPLAY.patch
@@ -41,7 +49,6 @@ Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
 Patch7:		%{name}-d.patch
-Patch8:		%{name}-cmake31.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel >= 4
 BuildRequires:	QtSvg-devel >= 4
@@ -71,7 +78,7 @@ BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 %{?with_lua:BuildRequires:	lua51 >= 5.1}
 %{?with_lua:BuildRequires:	lua51-devel >= 5.1}
-BuildRequires:	octave-devel >= 2:3.4.2
+%{?with_octave:BuildRequires:	octave-devel >= 2:3.4.2}
 BuildRequires:	pango-devel
 %{?with_perl_pdl:BuildRequires:	perl-PDL}
 BuildRequires:	perl-XML-DOM
@@ -104,7 +111,10 @@ BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
 %if %{with ocaml}
 BuildRequires:	ocaml
-BuildRequires:	ocaml-cairo-devel >= 1.2.0
+%if %{with ocaml_cairo}
+BuildRequires:	ocaml-cairo2-devel
+BuildRequires:	ocaml-cairo2-lablgtk2-devel
+%endif
 BuildRequires:	ocaml-idl-devel
 BuildRequires:	ocaml-findlib
 BuildRequires:	ocaml-lablgtk2-devel
@@ -621,10 +631,6 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-
-# "Posix" is reserved and can be set only automatically
-#%{__sed} -i -e 's/-version=Posix //' cmake/modules/language_support/cmake/Platform/Linux-dmd.cmake
 
 %build
 mkdir build
@@ -664,17 +670,20 @@ cd build
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
+	-DUSE_INCRTCL_VERSION_4=ON \
 	-DUSE_RPATH=OFF \
 	-DENABLE_tk=ON \
 	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
+	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
 	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
-	-DPLD_cgm=ON \
+	%{?with_cgm:-DPLD_cgm=ON} \
 	-DPLD_ntk=ON \
 	-DPLD_pdf=ON \
-	-DPLD_plmeta=ON \
+	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
 	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
+	-DTRY_OCTAVE4=ON \
 	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON \
 	-DPython_ADDITIONAL_VERSIONS=2.7 \
@@ -689,11 +698,11 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 rm -rf installed-docs
-mv $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -727,44 +736,54 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ABOUT AUTHORS ChangeLog.release Copyright FAQ NEWS PROBLEMS README README.release SERVICE ToDo
 %doc installed-docs/README.{1st.csa,1st.nn,csa,nn,drivers}
+%if %{with plmeta}
 %attr(755,root,root) %{_bindir}/plm2gif
 %attr(755,root,root) %{_bindir}/plpr
 %attr(755,root,root) %{_bindir}/plrender
+%endif
 %attr(755,root,root) %{_bindir}/pltek
 %attr(755,root,root) %{_bindir}/pstex2eps
 %attr(755,root,root) %{_libdir}/libcsirocsa.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcsirocsa.so.0
 %attr(755,root,root) %{_libdir}/libcsironn.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcsironn.so.0
+%if %{with cgm}
 %attr(755,root,root) %{_libdir}/libnistcd.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libnistcd.so.0
+%endif
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
-%attr(755,root,root) %{_libdir}/libplplotd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotd.so.12
+%attr(755,root,root) %{_libdir}/libplplot.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplot.so.13
+%if %{with plmeta}
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
 %{_mandir}/man1/plrender.1*
+%endif
 %{_mandir}/man1/pltek.1*
 %{_mandir}/man1/pstex2eps.1*
 %dir %{_libdir}/plplot%{version}
-%dir %{_libdir}/plplot%{version}/driversd
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/cgm.so
-%{_libdir}/plplot%{version}/driversd/cgm.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/mem.so
-%{_libdir}/plplot%{version}/driversd/mem.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/null.so
-%{_libdir}/plplot%{version}/driversd/null.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/plmeta.so
-%{_libdir}/plplot%{version}/driversd/plmeta.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ps.so
-%{_libdir}/plplot%{version}/driversd/ps.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pstex.so
-%{_libdir}/plplot%{version}/driversd/pstex.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/svg.so
-%{_libdir}/plplot%{version}/driversd/svg.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xfig.so
-%{_libdir}/plplot%{version}/driversd/xfig.driver_info
+%dir %{_libdir}/plplot%{version}/drivers
+%if %{with cgm}
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/cgm.so
+%{_libdir}/plplot%{version}/drivers/cgm.driver_info
+%endif
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/mem.so
+%{_libdir}/plplot%{version}/drivers/mem.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/null.so
+%{_libdir}/plplot%{version}/drivers/null.driver_info
+%if %{with plmeta}
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/plmeta.so
+%{_libdir}/plplot%{version}/drivers/plmeta.driver_info
+%endif
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ps.so
+%{_libdir}/plplot%{version}/drivers/ps.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/pstex.so
+%{_libdir}/plplot%{version}/drivers/pstex.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/svg.so
+%{_libdir}/plplot%{version}/drivers/svg.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/xfig.so
+%{_libdir}/plplot%{version}/drivers/xfig.driver_info
 %dir %{_datadir}/plplot%{version}
 %{_datadir}/plplot%{version}/*.map
 %{_datadir}/plplot%{version}/*.pal
@@ -772,56 +791,60 @@ rm -rf $RPM_BUILD_ROOT
 
 %files driver-cairo
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/cairo.so
-%{_libdir}/plplot%{version}/driversd/cairo.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/cairo.so
+%{_libdir}/plplot%{version}/drivers/cairo.driver_info
 
 %files driver-ntk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/ntk.so
-%{_libdir}/plplot%{version}/driversd/ntk.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ntk.so
+%{_libdir}/plplot%{version}/drivers/ntk.driver_info
 
 %files driver-pdf
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/pdf.so
-%{_libdir}/plplot%{version}/driversd/pdf.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/pdf.so
+%{_libdir}/plplot%{version}/drivers/pdf.driver_info
 
 %files driver-psttf
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/psttf.so
-%{_libdir}/plplot%{version}/driversd/psttf.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/psttf.so
+%{_libdir}/plplot%{version}/drivers/psttf.driver_info
 
 %files driver-tk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tk.so
-%{_libdir}/plplot%{version}/driversd/tk.driver_info
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/tkwin.so
-%{_libdir}/plplot%{version}/driversd/tkwin.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/tk.so
+%{_libdir}/plplot%{version}/drivers/tk.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/tkwin.so
+%{_libdir}/plplot%{version}/drivers/tkwin.driver_info
 
 %files driver-qt4
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/qt.so
-%{_libdir}/plplot%{version}/driversd/qt.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/qt.so
+%{_libdir}/plplot%{version}/drivers/qt.driver_info
 
 %files driver-wxwidgets
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/wxwidgets.so
-%{_libdir}/plplot%{version}/driversd/wxwidgets.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/wxwidgets.so
+%{_libdir}/plplot%{version}/drivers/wxwidgets.driver_info
 
 %files driver-xwin
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/driversd/xwin.so
-%{_libdir}/plplot%{version}/driversd/xwin.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/xwin.so
+%{_libdir}/plplot%{version}/drivers/xwin.driver_info
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcsirocsa.so
 %attr(755,root,root) %{_libdir}/libcsironn.so
+%if %{with cgm}
 %attr(755,root,root) %{_libdir}/libnistcd.so
-%attr(755,root,root) %{_libdir}/libplplotd.so
+%endif
+%attr(755,root,root) %{_libdir}/libplplot.so
 %attr(755,root,root) %{_libdir}/libqsastime.so
 %dir %{_includedir}/plplot
+%if %{with cgm}
 %{_includedir}/plplot/cd.h
 %{_includedir}/plplot/defines.h
+%endif
 %{_includedir}/plplot/disptab.h
 %{_includedir}/plplot/drivers.h
 %{_includedir}/plplot/pdf.h
@@ -837,10 +860,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plplot/qsastimedll.h
 # xwin driver (uses X11 headers)
 %{_includedir}/plplot/plxwd.h
-# -gnome
-%{_includedir}/plplot/gcw.h
-%{_includedir}/plplot/plplotcanvas.h
-%{_pkgconfigdir}/plplotd.pc
+%{_pkgconfigdir}/plplot.pc
+%{_libdir}/cmake/plplot
 %dir %{_examplesdir}/%{name}-%{version}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
@@ -859,23 +880,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %files c++
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotcxxd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxxd.so.11
+%attr(755,root,root) %{_libdir}/libplplotcxx.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.12
 
 %files c++-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotcxxd.so
+%attr(755,root,root) %{_libdir}/libplplotcxx.so
 %{_includedir}/plplot/plstream.h
-%{_pkgconfigdir}/plplotd-c++.pc
+%{_pkgconfigdir}/plplot-c++.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_cxx.sh
 %{_examplesdir}/%{name}-%{version}/c++
 
 %if %{with d}
 %files d-devel
 %defattr(644,root,root,755)
-%{_libdir}/libplplotdmdd.a
+%{_libdir}/libplplotdmd.a
 %{_includedir}/plplot/plplot.d
-%{_pkgconfigdir}/plplotd-d.pc
+%{_pkgconfigdir}/plplot-d.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_d.sh
 %{_examplesdir}/%{name}-%{version}/d
 %endif
@@ -883,34 +904,39 @@ rm -rf $RPM_BUILD_ROOT
 %files f95
 %defattr(644,root,root,755)
 %doc bindings/f95/readme_f95.txt
-%attr(755,root,root) %{_libdir}/libplplotf95cd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95cd.so.11
-%attr(755,root,root) %{_libdir}/libplplotf95d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95d.so.11
+%attr(755,root,root) %{_libdir}/libplplotf95.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotf95.so.12
+%attr(755,root,root) %{_libdir}/libplplotf95c.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotf95c.so.12
 
 %files f95-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotf95cd.so
-%attr(755,root,root) %{_libdir}/libplplotf95d.so
+%attr(755,root,root) %{_libdir}/libplplotf95.so
+%attr(755,root,root) %{_libdir}/libplplotf95c.so
+%{_libdir}/libplf95demolib.a
+%{_includedir}/plplot/plf95demolib.mod
 %{_includedir}/plplot/plplot.mod
-%{_includedir}/plplot/plplot_flt.mod
+%{_includedir}/plplot/plplot_graphics.mod
+%{_includedir}/plplot/plplot_str.mod
+%{_includedir}/plplot/plplot_strutils.mod
+%{_includedir}/plplot/plplot_types.mod
 %{_includedir}/plplot/plplotp.mod
-%{_pkgconfigdir}/plplotd-f95.pc
+%{_pkgconfigdir}/plplot-f95.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f95.sh
 %{_examplesdir}/%{name}-%{version}/f95
 
 %if %{with ada}
 %files ada
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotadad.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotadad.so.1
+%attr(755,root,root) %{_libdir}/libplplotada.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotada.so.2
 
 %files ada-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotadad.so
-%{ada_objdir}/plplotadad
-%{ada_incdir}/plplotadad
-%{_pkgconfigdir}/plplotd-ada.pc
+%attr(755,root,root) %{_libdir}/libplplotada.so
+%{ada_objdir}/plplotada
+%{ada_incdir}/plplotada
+%{_pkgconfigdir}/plplot-ada.pc
 %{_examplesdir}/%{name}-%{version}/ada
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ada.sh
 %endif
@@ -931,12 +957,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
-%attr(755,root,root) %{_libdir}/libplplottcltkd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltkd.so.11
-%attr(755,root,root) %{_libdir}/libtclmatrixd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtclmatrixd.so.9
-%attr(755,root,root) %{_libdir}/libplplottcltk_Maind.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltk_Maind.so.0
+%attr(755,root,root) %{_libdir}/libplplottcltk.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltk.so.12
+%attr(755,root,root) %{_libdir}/libtclmatrix.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtclmatrix.so.10
+%attr(755,root,root) %{_libdir}/libplplottcltk_Main.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltk_Main.so.1
 %{_datadir}/plplot%{version}/*.tcl
 %{_datadir}/plplot%{version}/tcl
 %{_mandir}/man1/pltcl.1*
@@ -944,40 +970,42 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tcl-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplottcltkd.so
-%attr(755,root,root) %{_libdir}/libtclmatrixd.so
-%attr(755,root,root) %{_libdir}/libplplottcltk_Maind.so
+%attr(755,root,root) %{_libdir}/libplplottcltk.so
+%attr(755,root,root) %{_libdir}/libtclmatrix.so
+%attr(755,root,root) %{_libdir}/libplplottcltk_Main.so
 %{_includedir}/plplot/pltcl.h
 %{_includedir}/plplot/pltk.h
 %{_includedir}/plplot/tclMatrix.h
-%{_pkgconfigdir}/plplotd-tcl.pc
-%{_pkgconfigdir}/plplotd-tcl_Main.pc
+%{_pkgconfigdir}/plplot-tcl.pc
+%{_pkgconfigdir}/plplot-tcl_Main.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_tcl.sh
 %{_examplesdir}/%{name}-%{version}/tcl
 %{_examplesdir}/%{name}-%{version}/tk
 
 %files qt4
 %defattr(644,root,root,755)
-%attr(755,root,root) %ghost %{_libdir}/libplplotqtd.so.1
-%attr(755,root,root) %{_libdir}/libplplotqtd.so.1.0.0
+%attr(755,root,root) %{_libdir}/libplplotqt.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotqt.so.2
 
 %files qt4-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotqtd.so
+%attr(755,root,root) %{_libdir}/libplplotqt.so
 %{_includedir}/plplot/qt.h
-%{_pkgconfigdir}/plplotd-qt.pc
+%{_pkgconfigdir}/plplot-qt.pc
 
 %files wxwidgets
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotwxwidgetsd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotwxwidgetsd.so.0
+%attr(755,root,root) %{_bindir}/wxPLViewer
+%attr(755,root,root) %{_libdir}/libplplotwxwidgets.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotwxwidgets.so.1
 
 %files wxwidgets-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotwxwidgetsd.so
+%attr(755,root,root) %{_libdir}/libplplotwxwidgets.so
 %{_includedir}/plplot/wxPLplot*.h
-%{_pkgconfigdir}/plplotd-wxwidgets.pc
+%{_pkgconfigdir}/plplot-wxwidgets.pc
 
+%if %{with octave}
 %files octave
 %defattr(644,root,root,755)
 %doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE}
@@ -990,6 +1018,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_octave.sh
 %{_examplesdir}/%{name}-%{version}/octave
+%endif
 
 %if %{with lua}
 %files -n lua-plplot
@@ -1014,10 +1043,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_libdir}/ocaml/plplot/plplot.cm*
 %{_libdir}/ocaml/plplot/plplot.mli
-%{_pkgconfigdir}/plplotd-ocaml.pc
+%{_pkgconfigdir}/plplot-ocaml.pc
 %{_examplesdir}/%{name}-%{version}/ocaml
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ocaml.sh
 
+%if %{with ocaml_cairo}
 %files -n ocaml-plcairo
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/ocaml/stublibs/dllplcairo_stubs.so
@@ -1031,6 +1061,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_libdir}/ocaml/plcairo/plcairo.cm*
 %{_libdir}/ocaml/plcairo/plcairo.mli
+%endif
 %endif
 
 %files -n python-plplot
