@@ -1,7 +1,7 @@
 # TODO:
 # - ada builds (on ix86 at least), enable by default?
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
-# - bindings: gnome2, tk-x-plat?
+# - bindings: tk-x-plat?
 # NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
@@ -11,7 +11,6 @@
 # pstex driver deprecated in favour of psttf and pscairo
 #
 # Conditional build:
-%bcond_without	gnome2		# GNOME 2 and pygtk bindings
 %bcond_with	perl_pdl	# Perl/PDL examples in tests (only)
 %bcond_with	ada		# Ada binding
 %bcond_with	d		# D binding
@@ -68,7 +67,6 @@ BuildRequires:	jadetex
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	lapack-devel
 BuildRequires:	libLASi-devel
-%{?with_gnome2:BuildRequires:	libgnomeprintui-devel >= 2.2}
 BuildRequires:	libharu-devel >= 2.1.0
 BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
@@ -89,7 +87,6 @@ BuildRequires:	python-PyQt4-uic
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-sip-devel
-%{?with_gnome2:BuildRequires:	python-pygtk-devel >= 2:2.13.0}
 BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt4-build >= 4
 BuildRequires:	qt4-qmake >= 4
