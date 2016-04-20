@@ -1,7 +1,6 @@
 # TODO:
-# - fix itk detection (import requires $DISPLAY, so use force or file presence)
+# - ada builds (on ix86 at least), enable by default?
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
-# - ada build (on ix86 at least), enable by default?
 # - perl_pdl - why disabled?
 # - bindings: gnome2, tk-x-plat?
 # NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
@@ -36,7 +35,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.11.1
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -668,28 +667,33 @@ cd build
 %else
 	-DENABLE_lua=OFF \
 %endif
+	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
+	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
+	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
+	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
+	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
+	-DENABLE_tk=ON \
 	-DF95_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
-	-DUSE_INCRTCL_VERSION_4=ON \
-	-DUSE_RPATH=OFF \
-	-DENABLE_tk=ON \
-	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
-	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
-	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
-	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
+	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
 	%{?with_cgm:-DPLD_cgm=ON} \
 	-DPLD_ntk=ON \
 	-DPLD_pdf=ON \
 	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
-	-DPL_FREETYPE_FONT_PATH=/usr/share/fonts/TTF \
-	-DTRY_OCTAVE4=ON \
-	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
-	-DwxWidgets_USE_UNICODE=ON \
 	-DPython_ADDITIONAL_VERSIONS=2.7 \
-	%{!?with_perl_pdl:-DENABLE_pdl=OFF}
+	-DTRY_OCTAVE4=ON \
+	-DUSE_INCRTCL_VERSION_4=ON \
+	-DUSE_RPATH=OFF \
+%if %{with itcl}
+	-DPLPLOT_ITCL_VERSION="$(rpm -q itcl --qf '%%{VERSION}')" \
+	-DPLPLOT_ITK_VERSION="$(rpm -q itk --qf '%%{VERSION}')" \
+	-DIWIDGETS_VERSIONS_LIST="$(rpm -q iwidgets --qf '%%{VERSION}');$(rpm -q itk --qf '%%{VERSION}');$(rpm -q itcl --qf '%%{VERSION}')" \
+%endif
+	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
+	-DwxWidgets_USE_UNICODE=ON
 
 %{__make}
 

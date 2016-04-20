@@ -88,3 +88,26 @@
        else(NOT PLPLOT_TK_VERSION)
  	set(TK_RC 0)
        endif(NOT PLPLOT_TK_VERSION)
+@@ -318,7 +318,7 @@
+       file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/CheckITK_Available.tcl "puts -nonewline [package require Itk ${SUGGESTED_ITK_VERSION}]; exit")
+       # Refine SUGGESTED_ITK_VERSION to exact value or fail.
+       execute_process(
+-	COMMAND ${TCL_TCLSH} ${CMAKE_CURRENT_BINARY_DIR}/CheckITK_Available.tcl
++	COMMAND ${TCL_TCLSH} ${CMAKE_CURRENT_LIST_DIR}/CheckTclPackage_Available.tcl itk ${SUGGESTED_ITK_VERSION}
+ 	RESULT_VARIABLE ITK_RC
+ 	OUTPUT_VARIABLE _plplot_itk_version
+ 	)
+--- plplot-5.11.1/cmake/modules/CheckTclPackage_Available.tcl.orig	1970-01-01 01:00:00.000000000 +0100
++++ plplot-5.11.1/cmake/modules/CheckTclPackage_Available.tcl	2016-04-20 17:35:06.305618401 +0200
+@@ -0,0 +1,11 @@
++catch {package require bogusPackageNameToScanAvailablePackages}
++
++set packageName [lindex $argv 0]
++set packageReq [lindex $argv 1]
++set matchingVersions {}
++foreach packageVersion [package versions $packageName] {
++	if [package vsatisfies $packageVersion $packageReq] { lappend matchingVersions $packageVersion }
++}
++
++puts [lindex [lsort -command {package vcompare} -decreasing $matchingVersions] 0]
++exit
