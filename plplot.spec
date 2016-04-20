@@ -1,7 +1,6 @@
 # TODO:
 # - ada builds (on ix86 at least), enable by default?
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
-# - perl_pdl - why disabled?
 # - bindings: gnome2, tk-x-plat?
 # NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
 # aqt driver is Darwin-only
@@ -13,7 +12,7 @@
 #
 # Conditional build:
 %bcond_without	gnome2		# GNOME 2 and pygtk bindings
-%bcond_with	perl_pdl	# Perl examples in tests
+%bcond_with	perl_pdl	# Perl/PDL examples in tests (only)
 %bcond_with	ada		# Ada binding
 %bcond_with	d		# D binding
 %bcond_without	java		# Java binding
