@@ -1,6 +1,5 @@
 # TODO:
 # - fix itk detection (import requires $DISPLAY, so use force or file presence)
-# - ocaml-cairo (requires cairo2 module)
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
 # - ada build (on ix86 at least), enable by default?
 # - perl_pdl - why disabled?
@@ -22,7 +21,7 @@
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
 %bcond_without	ocaml		# OCaml binding
-%bcond_with	ocaml_cairo	# OCaml-Cairo component (requires cairo2 module)
+%bcond_without	ocaml_cairo	# OCaml-Cairo component
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without	octave		# Octave bindings
 %bcond_with	cgm		# CGM driver, libnistcd library
@@ -54,6 +53,7 @@ BuildRequires:	QtGui-devel >= 4
 BuildRequires:	QtSvg-devel >= 4
 BuildRequires:	QtXml-devel >= 4
 BuildRequires:	agg-devel
+%{?with_ocaml_cairo:BuildRequires:	cairo-devel}
 BuildRequires:	cmake >= 2.6.4
 BuildRequires:	docbook-style-dsssl
 %{?with_d:BuildRequires:	dmd}
@@ -113,7 +113,7 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	ocaml
 %if %{with ocaml_cairo}
 BuildRequires:	ocaml-cairo2-devel
-BuildRequires:	ocaml-cairo2-lablgtk2-devel
+BuildRequires:	ocaml-cairo2-gtk-devel
 %endif
 BuildRequires:	ocaml-idl-devel
 BuildRequires:	ocaml-findlib
@@ -556,7 +556,8 @@ Summary:	PLcairo - Cairo extras for OCaml binding for PLplot library
 Summary(pl.UTF-8):	PLcairo - dodatki Cairo do wiązania języka OCaml do biblioteki PLplot
 Group:		Libraries
 Requires:	ocaml-plplot = %{version}-%{release}
-Requires:	ocaml-cairo
+Requires:	ocaml-cairo2
+Requires:	ocaml-cairo2-gtk
 %requires_eq	ocaml-runtime
 
 %description -n ocaml-plcairo
@@ -569,7 +570,8 @@ PLcairo - dodatki Cairo do wiązania języka OCaml do biblioteki PLplot.
 Summary:	Development files for PLcairo OCaml library
 Summary(pl.UTF-8):	Pliki programistyczne biblioteki OCamla PLcairo
 Group:		Development/Libraries
-Requires:	ocaml-cairo-devel
+Requires:	ocaml-cairo2-devel
+Requires:	ocaml-cairo2-gtk-devel
 Requires:	ocaml-plcairo = %{version}-%{release}
 Requires:	ocaml-plplot-devel = %{version}-%{release}
 %requires_eq	ocaml
@@ -1038,11 +1040,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ocaml/plplot
 %{_libdir}/ocaml/plplot/META
 %{_libdir}/ocaml/plplot/libplplot_stubs.a
+%{_libdir}/ocaml/plplot/plplot.cma
+%{_libdir}/ocaml/plplot/plplot.cmi
+%{_libdir}/ocaml/plplot/plplot.mli
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/plplot/plplot.a
+%{_libdir}/ocaml/plplot/plplot.cmxa
 %endif
-%{_libdir}/ocaml/plplot/plplot.cm*
-%{_libdir}/ocaml/plplot/plplot.mli
 %{_pkgconfigdir}/plplot-ocaml.pc
 %{_examplesdir}/%{name}-%{version}/ocaml
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ocaml.sh
@@ -1056,11 +1060,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ocaml/plcairo
 %{_libdir}/ocaml/plcairo/META
 %{_libdir}/ocaml/plcairo/libplcairo_stubs.a
+%{_libdir}/ocaml/plcairo/plcairo.cma
+%{_libdir}/ocaml/plcairo/plcairo.cmi
+%{_libdir}/ocaml/plcairo/plcairo.mli
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/plcairo/plcairo.a
+%{_libdir}/ocaml/plcairo/plcairo.cmxa
 %endif
-%{_libdir}/ocaml/plcairo/plcairo.cm*
-%{_libdir}/ocaml/plcairo/plcairo.mli
 %endif
 %endif
 
