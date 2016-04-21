@@ -1,5 +1,4 @@
 # TODO:
-# - ada builds (on ix86 at least), enable by default?
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
 # - bindings: tk-x-plat?
 # NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
@@ -12,7 +11,7 @@
 #
 # Conditional build:
 %bcond_with	perl_pdl	# Perl/PDL examples in tests (only)
-%bcond_with	ada		# Ada binding
+%bcond_without	ada		# Ada binding
 %bcond_with	d		# D binding
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
@@ -27,6 +26,9 @@
 # not yet available on x32 (ocaml 4.02.1), update when upstream will support it
 %ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
+%endif
+%ifarch sparc64 x32
+%undefine	with_ada
 %endif
 
 Summary:	PLplot - a library of functions that are useful for making scientific plots
