@@ -41,6 +41,7 @@ Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 Patch0:		%{name}-octave.patch
 Patch1:		%{name}-qhull.patch
 Patch2:		%{name}-no-DISPLAY.patch
+Patch3:		%{name}-plmeta.patch
 Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
@@ -624,6 +625,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
@@ -866,10 +868,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/plplot
 %dir %{_examplesdir}/%{name}-%{version}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test-interactive.sh
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c_interactive.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_diff.sh
+%if %{with plmeta}
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_plrender.sh
+%endif
 %{_examplesdir}/%{name}-%{version}/c
 %{_examplesdir}/%{name}-%{version}/cmake
 %{_examplesdir}/%{name}-%{version}/CMakeLists.txt
