@@ -34,17 +34,15 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.11.1
-Release:	5
+Version:	5.12.0
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	7a3dbbe49a00f925b095bc06cadbaf63
+# Source0-md5:	998a05be218e5de8f2faf988b8dbdc51
 Patch0:		%{name}-octave.patch
-Patch1:		%{name}-qhull.patch
 Patch2:		%{name}-no-DISPLAY.patch
 Patch3:		%{name}-plmeta.patch
-Patch4:		%{name}-nofonts.patch
 Patch5:		%{name}-adadirs.patch
 Patch6:		%{name}-ocamldir.patch
 Patch7:		%{name}-d.patch
@@ -625,10 +623,8 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
@@ -760,7 +756,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
 %attr(755,root,root) %{_libdir}/libplplot.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplot.so.13
+%attr(755,root,root) %ghost %{_libdir}/libplplot.so.14
 %if %{with plmeta}
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
@@ -802,8 +798,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files driver-ntk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ntk.so
-%{_libdir}/plplot%{version}/drivers/ntk.driver_info
+#%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ntk.so
+#%{_libdir}/plplot%{version}/drivers/ntk.driver_info
 
 %files driver-pdf
 %defattr(644,root,root,755)
