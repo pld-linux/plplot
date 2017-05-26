@@ -17,7 +17,7 @@
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
 %bcond_without	ocaml		# OCaml binding
-%bcond_without	ocaml_cairo	# OCaml-Cairo component
+%bcond_with	ocaml_cairo	# OCaml-Cairo component
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without	octave		# Octave bindings
 %bcond_with	cgm		# CGM driver, libnistcd library
@@ -35,7 +35,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.12.0
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -798,8 +798,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files driver-ntk
 %defattr(644,root,root,755)
-#%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ntk.so
-#%{_libdir}/plplot%{version}/drivers/ntk.driver_info
+%attr(755,root,root) %{_libdir}/plplot%{version}/drivers/ntk.so
+%{_libdir}/plplot%{version}/drivers/ntk.driver_info
 
 %files driver-pdf
 %defattr(644,root,root,755)
@@ -865,6 +865,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/plplot.pc
 %{_libdir}/cmake/plplot
 %dir %{_examplesdir}/%{name}-%{version}
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/Chloe.pgm
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/README.Chloe
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test-interactive.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
@@ -876,7 +878,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_examplesdir}/%{name}-%{version}/c
 %{_examplesdir}/%{name}-%{version}/cmake
 %{_examplesdir}/%{name}-%{version}/CMakeLists.txt
-%{_examplesdir}/%{name}-%{version}/lena.*
 %{_examplesdir}/%{name}-%{version}/Makefile
 %if %{with perl_pdl}
 # perl examples use PDL::Graphics::PLplot module found in perl-PDL
@@ -886,7 +887,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.12
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.13
 
 %files c++-devel
 %defattr(644,root,root,755)
@@ -908,24 +909,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files f95
 %defattr(644,root,root,755)
-%doc bindings/f95/readme_f95.txt
+%doc bindings/f95/README_array_sizes
 %attr(755,root,root) %{_libdir}/libplplotf95.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95.so.12
-%attr(755,root,root) %{_libdir}/libplplotf95c.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95c.so.12
+%attr(755,root,root) %ghost %{_libdir}/libplplotf95.so.13
 
 %files f95-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotf95.so
-%attr(755,root,root) %{_libdir}/libplplotf95c.so
 %{_libdir}/libplf95demolib.a
 %{_includedir}/plplot/plf95demolib.mod
-%{_includedir}/plplot/plplot.mod
+%{_includedir}/plplot/plplot_double.mod
 %{_includedir}/plplot/plplot_graphics.mod
-%{_includedir}/plplot/plplot_str.mod
-%{_includedir}/plplot/plplot_strutils.mod
+%{_includedir}/plplot/plplot.mod
+%{_includedir}/plplot/plplot_private_exposed.mod
+%{_includedir}/plplot/plplot_private_utilities.mod
+%{_includedir}/plplot/plplot_single.mod
 %{_includedir}/plplot/plplot_types.mod
-%{_includedir}/plplot/plplotp.mod
 %{_pkgconfigdir}/plplot-f95.pc
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f95.sh
 %{_examplesdir}/%{name}-%{version}/f95
@@ -963,7 +962,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltk.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltk.so.12
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltk.so.13
 %attr(755,root,root) %{_libdir}/libtclmatrix.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtclmatrix.so.10
 %attr(755,root,root) %{_libdir}/libplplottcltk_Main.so.*.*.*
