@@ -34,17 +34,14 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.12.0
-Release:	6
+Version:	5.14.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	998a05be218e5de8f2faf988b8dbdc51
-Patch0:		%{name}-octave.patch
+# Source0-md5:	244883879f24a2324f536d624168870d
 Patch2:		%{name}-no-DISPLAY.patch
 Patch3:		%{name}-plmeta.patch
-Patch5:		%{name}-adadirs.patch
-Patch6:		%{name}-ocamldir.patch
 Patch7:		%{name}-d.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	QtGui-devel >= 4
@@ -323,30 +320,32 @@ PLplot library - D binding.
 %description d-devel -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla języka D.
 
-%package f95
+%package fortran
 Summary:	PLplot library - FORTRAN 95 binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka FORTRAN 95
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Obsoletes:	plplot-f95
 
-%description f95
+%description fortran
 PLplot library - FORTRAN 95 binding.
 
-%description f95 -l pl.UTF-8
+%description fortran -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla języka FORTRAN 95.
 
-%package f95-devel
+%package fortran-devel
 Summary:	PLplot library - FORTRAN 95 binding development files
 Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN 95
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	%{name}-f95 = %{version}-%{release}
+Requires:	%{name}-fortran = %{version}-%{release}
 Requires:	gcc-fortran
+Obsoletes:	plplot-f95-devel
 
-%description f95-devel
+%description fortran-devel
 PLplot library - FORTRAN 95 binding development files.
 
-%description f95-devel -l pl.UTF-8
+%description fortran-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla języka FORTRAN
 95.
 
@@ -622,11 +621,8 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 
 %prep
 %setup -q
-%patch0 -p1
 %patch2 -p1
 %patch3 -p1
-%patch5 -p1
-%patch6 -p1
 %patch7 -p1
 
 %build
@@ -638,8 +634,8 @@ cd build
 %cmake .. \
 %if %{with ada}
 	-DENABLE_ada=ON \
-	-DADA_INCLUDE_PATH=%{ada_incdir} \
-	-DADA_LIB_PATH=%{ada_objdir} \
+	-DADA_INCLUDE_DIR=%{ada_incdir} \
+	-DADA_LIB_DIR=%{ada_objdir} \
 %else
 	-DENABLE_ada=OFF \
 %endif
@@ -659,17 +655,23 @@ cd build
 %endif
 %if %{with lua}
 	-DENABLE_lua=ON \
-	-DLUA_EXECUTABLE=%{_bindir}/lua5.1 \
+	-DLUA_VERSION=5.1 \
+	-DREQUIRED_LUA_VERSION=5.1 \
 %else
 	-DENABLE_lua=OFF \
 %endif
 	-DENABLE_itcl=%{?with_itcl:ON}%{!?with_itcl:OFF} \
 	-DENABLE_itk=%{?with_itcl:ON}%{!?with_itcl:OFF} \
-	-DENABLE_ocaml=%{?with_ocaml:ON}%{!?with_ocaml:OFF} \
+%if %{with ocaml}
+	-DENABLE_ocaml=ON \
+	-DOCAML_INSTALL_DIR=%{_libdir}/ocaml \
+%else
+	-DENABLE_ocaml=OFF \
+%endif
 	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
 	-DENABLE_tk=ON \
-	-DF95_MOD_DIR=%{_includedir}/plplot \
+	-DFORTRAN_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
@@ -679,8 +681,8 @@ cd build
 	-DPLD_pdf=ON \
 	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
+	-DFORCE_PYTHON2=ON \
 	-DPython_ADDITIONAL_VERSIONS=2.7 \
-	-DTRY_OCTAVE4=ON \
 	-DUSE_INCRTCL_VERSION_4=ON \
 	-DUSE_RPATH=OFF \
 %if %{with itcl}
@@ -703,7 +705,7 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/plplot%{version}/examples \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-rm -rf installed-docs
+%{__rm} -rf installed-docs
 %{__mv} $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
@@ -719,8 +721,8 @@ rm -rf $RPM_BUILD_ROOT
 %post	c++ -p /sbin/ldconfig
 %postun	c++ -p /sbin/ldconfig
 
-%post	f95 -p /sbin/ldconfig
-%postun	f95 -p /sbin/ldconfig
+%post	fortran -p /sbin/ldconfig
+%postun	fortran -p /sbin/ldconfig
 
 %post	ada -p /sbin/ldconfig
 %postun	ada -p /sbin/ldconfig
@@ -737,7 +739,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ABOUT AUTHORS ChangeLog.release Copyright FAQ NEWS PROBLEMS README README.release SERVICE ToDo
-%doc installed-docs/README.{1st.csa,1st.nn,csa,nn,drivers}
+%doc installed-docs/README.{csa,nn,drivers}
 %if %{with plmeta}
 %attr(755,root,root) %{_bindir}/plm2gif
 %attr(755,root,root) %{_bindir}/plpr
@@ -756,7 +758,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
 %attr(755,root,root) %{_libdir}/libplplot.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplot.so.14
+%attr(755,root,root) %ghost %{_libdir}/libplplot.so.16
 %if %{with plmeta}
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
@@ -787,7 +789,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/plplot%{version}/drivers/xfig.so
 %{_libdir}/plplot%{version}/drivers/xfig.driver_info
 %dir %{_datadir}/plplot%{version}
-%{_datadir}/plplot%{version}/*.map
 %{_datadir}/plplot%{version}/*.pal
 %{_datadir}/plplot%{version}/*.fnt
 
@@ -847,8 +848,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plplot/cd.h
 %{_includedir}/plplot/defines.h
 %endif
+%{_includedir}/plplot/csa.h
+%{_includedir}/plplot/csadll.h
 %{_includedir}/plplot/disptab.h
 %{_includedir}/plplot/drivers.h
+%{_includedir}/plplot/nn.h
+%{_includedir}/plplot/nndll.h
 %{_includedir}/plplot/pdf.h
 %{_includedir}/plplot/plConfig.h
 %{_includedir}/plplot/plDevs.h
@@ -887,7 +892,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.13
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.14
 
 %files c++-devel
 %defattr(644,root,root,755)
@@ -907,17 +912,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_examplesdir}/%{name}-%{version}/d
 %endif
 
-%files f95
+%files fortran
 %defattr(644,root,root,755)
-%doc bindings/f95/README_array_sizes
-%attr(755,root,root) %{_libdir}/libplplotf95.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotf95.so.13
+%doc bindings/fortran/README_array_sizes
+%attr(755,root,root) %{_libdir}/libplplotfortran.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libplplotfortran.so.0
 
-%files f95-devel
+%files fortran-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libplplotf95.so
-%{_libdir}/libplf95demolib.a
-%{_includedir}/plplot/plf95demolib.mod
+%attr(755,root,root) %{_libdir}/libplplotfortran.so
+%{_libdir}/libplfortrandemolib.a
+%{_includedir}/plplot/plfortrandemolib.mod
 %{_includedir}/plplot/plplot_double.mod
 %{_includedir}/plplot/plplot_graphics.mod
 %{_includedir}/plplot/plplot.mod
@@ -925,21 +930,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plplot/plplot_private_utilities.mod
 %{_includedir}/plplot/plplot_single.mod
 %{_includedir}/plplot/plplot_types.mod
-%{_pkgconfigdir}/plplot-f95.pc
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_f95.sh
-%{_examplesdir}/%{name}-%{version}/f95
+%{_pkgconfigdir}/plplot-fortran.pc
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_fortran.sh
+%{_examplesdir}/%{name}-%{version}/fortran
 
 %if %{with ada}
 %files ada
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotada.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotada.so.2
+%attr(755,root,root) %ghost %{_libdir}/libplplotada.so.4
 
 %files ada-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotada.so
-%{ada_objdir}/plplotada
-%{ada_incdir}/plplotada
+%{ada_objdir}/plplot_*.ali
+%{ada_incdir}/plplot*.ad*
 %{_pkgconfigdir}/plplot-ada.pc
 %{_examplesdir}/%{name}-%{version}/ada
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_ada.sh
@@ -948,7 +953,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with java}
 %files java
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/plplotjavac_wrap.so
+%attr(755,root,root) %{_libdir}/libplplotjavac_wrap.so
 %{_javadir}/plplot.jar
 
 %files java-devel
@@ -962,7 +967,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pltcl
 %attr(755,root,root) %{_bindir}/plserver
 %attr(755,root,root) %{_libdir}/libplplottcltk.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplottcltk.so.13
+%attr(755,root,root) %ghost %{_libdir}/libplplottcltk.so.14
 %attr(755,root,root) %{_libdir}/libtclmatrix.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtclmatrix.so.10
 %attr(755,root,root) %{_libdir}/libplplottcltk_Main.so.*.*.*
@@ -1014,7 +1019,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc bindings/octave/{BUGS,FGA,README,ToDo,USAGE}
 %attr(755,root,root) %{octave_oct_sitedir}/plplot_octave.oct
-%{octave_m_sitedir}/PLplot
+%{octave_m_sitedir}/*.m
 %{_datadir}/plplot_octave
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_octave_interactive.sh
 
@@ -1044,6 +1049,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/plplot/libplplot_stubs.a
 %{_libdir}/ocaml/plplot/plplot.cma
 %{_libdir}/ocaml/plplot/plplot.cmi
+%{_libdir}/ocaml/plplot/plplot.cmx
 %{_libdir}/ocaml/plplot/plplot.mli
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/plplot/plplot.a
@@ -1074,9 +1080,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-plplot
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_plplotcmodule.so
-%attr(755,root,root) %{py_sitedir}/plplot_widgetmodule.so
+%attr(755,root,root) %{py_sitedir}/_Pltk_init.so
+%attr(755,root,root) %{py_sitedir}/_plplotc.so
 %{py_sitedir}/Plframe.py[co]
+%{py_sitedir}/Pltk_init.py[co]
 %{py_sitedir}/plplotc.py[co]
 %{py_sitedir}/plplot.py[co]
 %{py_sitedir}/TclSup.py[co]
