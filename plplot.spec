@@ -1049,10 +1049,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/plplot/libplplot_stubs.a
 %{_libdir}/ocaml/plplot/plplot.cma
 %{_libdir}/ocaml/plplot/plplot.cmi
-%{_libdir}/ocaml/plplot/plplot.cmx
 %{_libdir}/ocaml/plplot/plplot.mli
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/plplot/plplot.a
+%{_libdir}/ocaml/plplot/plplot.cmx
 %{_libdir}/ocaml/plplot/plplot.cmxa
 %endif
 %{_pkgconfigdir}/plplot-ocaml.pc
