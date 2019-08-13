@@ -35,7 +35,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.14.0
-Release:	3
+Release:	4
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -80,14 +80,15 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
-BuildRequires:	sip-PyQt4
-BuildRequires:	python-PyQt4-uic
+BuildRequires:	sip-PyQt5
+BuildRequires:	python-PyQt5-uic
+BuildRequires:	python-PyQt5-sip
 BuildRequires:	python-numpy-devel >= 15.3
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	python-sip-devel
 BuildRequires:	qhull-devel >= 2011.1
-BuildRequires:	qt4-build >= 4
-BuildRequires:	qt4-qmake >= 4
+BuildRequires:	qt5-build >= 4
+BuildRequires:	qt5-qmake >= 4
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
@@ -227,17 +228,17 @@ formats.
 Sterownik cairo dla biblioteki PLplot. Obsługuje formaty wyjścia JPEG
 i PNG.
 
-%package driver-qt4
-Summary:	Qt4 driver for PLplot library
-Summary(pl.UTF-8):	Sterownik Qt4 dla biblioteki PLplot
+%package driver-qt5
+Summary:	Qt5 driver for PLplot library
+Summary(pl.UTF-8):	Sterownik Qt5 dla biblioteki PLplot
 Group:		Libraries
-Requires:	%{name}-qt4 = %{version}-%{release}
+Requires:	%{name}-qt5 = %{version}-%{release}
 
-%description driver-qt4
-Qt4 driver for PLplot library. Supports Qt4 output.
+%description driver-qt5
+Qt5 driver for PLplot library. Supports Qt5 output.
 
-%description driver-qt4 -l pl.UTF-8
-Sterownik Qt4 dla biblioteki PLplot. Obsługuje wyjście poprzez Qt4.
+%description driver-qt5 -l pl.UTF-8
+Sterownik Qt5 dla biblioteki PLplot. Obsługuje wyjście poprzez Qt5.
 
 %package driver-wxwidgets
 Summary:	wxWidgets driver for PLplot library
@@ -427,33 +428,33 @@ PLplot library - Tcl/Tk binding development files.
 %description tcl-devel -l pl.UTF-8
 Biblioteka PLplot - pliki programistyczne wiązania dla Tcl/Tk.
 
-%package qt4
-Summary:	PLplot library - Qt4 binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Qt4
+%package qt5
+Summary:	PLplot library - Qt5 binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Qt5
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
-%description qt4
-PLplot library - Qt4 binding.
+%description qt5
+PLplot library - Qt5 binding.
 
-%description qt4 -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla Qt4.
+%description qt5 -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla Qt5.
 
-%package qt4-devel
-Summary:	PLplot library - Qt4 binding development files
-Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Qt4
+%package qt5-devel
+Summary:	PLplot library - Qt5 binding development files
+Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Qt5
 Group:		Development/Libraries
-Requires:	%{name}-qt4 = %{version}-%{release}
+Requires:	%{name}-qt5 = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	QtGui-devel
 Requires:	QtSvg-devel
 Requires:	QtXml-devel
 
-%description qt4-devel
-PLplot library - Qt4 binding development files.
+%description qt5-devel
+PLplot library - Qt5 binding development files.
 
-%description qt4-devel -l pl.UTF-8
-Biblioteka PLplot - pliki programistyczne wiązania dla Qt4.
+%description qt5-devel -l pl.UTF-8
+Biblioteka PLplot - pliki programistyczne wiązania dla Qt5.
 
 %package wxwidgets
 Summary:	PLplot library - wxWidgets binding
@@ -592,19 +593,19 @@ PLplot library - Python binding.
 %description -n python-plplot -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Pythona.
 
-%package -n python-plplot-qt4
-Summary:	PLplot library - PyQt4 binding
-Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla PyQt4
+%package -n python-plplot-qt5
+Summary:	PLplot library - PyQt5 binding
+Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla PyQt5
 Group:		Libraries/Python
 Requires:	python-plplot = %{version}-%{release}
 %pyrequires_eq	python-libs
 Requires:	python-numpy
 
-%description -n python-plplot-qt4
-PLplot library - Python/PyQt4 binding.
+%description -n python-plplot-qt5
+PLplot library - Python/PyQt5 binding.
 
-%description -n python-plplot-qt4 -l pl.UTF-8
-Biblioteka PLplot - wiązanie dla Pythona/PyQt4.
+%description -n python-plplot-qt5 -l pl.UTF-8
+Biblioteka PLplot - wiązanie dla Pythona/PyQt5.
 
 %package -n python-plplot-examples
 Summary:	PLplot library - Python binding examples
@@ -671,6 +672,7 @@ cd build
 	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
 	-DENABLE_tk=ON \
+	-DPLPLOT_USE_QT5=ON \
 	-DFORTRAN_MOD_DIR=%{_includedir}/plplot \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
@@ -730,8 +732,8 @@ rm -rf $RPM_BUILD_ROOT
 %post	tcl -p /sbin/ldconfig
 %postun	tcl -p /sbin/ldconfig
 
-%post	qt4 -p /sbin/ldconfig
-%postun	qt4 -p /sbin/ldconfig
+%post	qt5 -p /sbin/ldconfig
+%postun	qt5 -p /sbin/ldconfig
 
 %post	wxwidgets -p /sbin/ldconfig
 %postun	wxwidgets -p /sbin/ldconfig
@@ -819,7 +821,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/plplot%{version}/drivers/tkwin.so
 %{_libdir}/plplot%{version}/drivers/tkwin.driver_info
 
-%files driver-qt4
+%files driver-qt5
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/plplot%{version}/drivers/qt.so
 %{_libdir}/plplot%{version}/drivers/qt.driver_info
@@ -991,12 +993,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_examplesdir}/%{name}-%{version}/tcl
 %{_examplesdir}/%{name}-%{version}/tk
 
-%files qt4
+%files qt5
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotqt.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libplplotqt.so.2
 
-%files qt4-devel
+%files qt5-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotqt.so
 %{_includedir}/plplot/qt.h
@@ -1088,9 +1090,9 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/plplot.py[co]
 %{py_sitedir}/TclSup.py[co]
 
-%files -n python-plplot-qt4
+%files -n python-plplot-qt5
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/plplot_pyqt4.so
+%attr(755,root,root) %{py_sitedir}/plplot_pyqt5.so
 
 %files -n python-plplot-examples
 %defattr(644,root,root,755)
