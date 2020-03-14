@@ -35,7 +35,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.14.0
-Release:	8
+Release:	9
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -44,9 +44,10 @@ Patch2:		%{name}-no-DISPLAY.patch
 Patch3:		%{name}-plmeta.patch
 Patch7:		%{name}-d.patch
 URL:		http://plplot.sourceforge.net/
-BuildRequires:	QtGui-devel >= 4
-BuildRequires:	QtSvg-devel >= 4
-BuildRequires:	QtXml-devel >= 4
+BuildRequires:	Qt5Gui-devel
+BuildRequires:	Qt5PrintSupport-devel
+BuildRequires:	Qt5Svg-devel
+BuildRequires:	Qt5Xml-devel
 BuildRequires:	agg-devel
 %{?with_ocaml_cairo:BuildRequires:	cairo-devel}
 BuildRequires:	cmake >= 2.6.4
