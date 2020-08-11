@@ -1,0 +1,18 @@
+commit 2aa2e1bdae9f75dbf74dc970e80834081fb3d0de
+Author: António Rodrigues Tomé <artome@linux-2zfn.Home>
+Date:   Sat Jun 27 14:23:19 2020 +0100
+
+    Inclusion of #include <QPainterPath> needed for new distributions of qt.
+
+diff --git a/include/qt.h b/include/qt.h
+index 99919b0e6..cde88af09 100644
+--- a/include/qt.h
++++ b/include/qt.h
+@@ -67,6 +67,7 @@
+ #include <QMainWindow>
+ #include <QPicture>
+ #include <QMutex>
++#include <QPainterPath>
+ 
+ #include "plDevs.h"
+ #include "plplotP.h"

@@ -34,15 +34,16 @@
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
-Version:	5.14.0
-Release:	11
+Version:	5.15.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
-# Source0-md5:	244883879f24a2324f536d624168870d
-Patch2:		%{name}-no-DISPLAY.patch
-Patch3:		%{name}-plmeta.patch
-Patch7:		%{name}-d.patch
+# Source0-md5:	36aec5bfadc2e207cf8ee39f573c9303
+Patch0:		%{name}-no-DISPLAY.patch
+Patch1:		%{name}-plmeta.patch
+Patch2:		%{name}-d.patch
+Patch3:		qt-5.15.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	Qt5Gui-devel
 BuildRequires:	Qt5PrintSupport-devel
@@ -623,9 +624,10 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch7 -p1
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
 		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
@@ -766,7 +768,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libqsastime.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libqsastime.so.0
 %attr(755,root,root) %{_libdir}/libplplot.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplot.so.16
+%attr(755,root,root) %ghost %{_libdir}/libplplot.so.17
 %if %{with plmeta}
 %{_mandir}/man1/plm2gif.1*
 %{_mandir}/man1/plpr.1*
@@ -878,20 +880,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/plplot.pc
 %{_libdir}/cmake/plplot
 %dir %{_examplesdir}/%{name}-%{version}
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/Chloe.pgm
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/README.Chloe
+%{_examplesdir}/%{name}-%{version}/c
+%{_examplesdir}/%{name}-%{version}/cmake
+%{_examplesdir}/%{name}-%{version}/CMakeLists.txt
+%{_examplesdir}/%{name}-%{version}/Chloe.pgm
+%{_examplesdir}/%{name}-%{version}/Makefile
+%{_examplesdir}/%{name}-%{version}/README.Chloe
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/plplot-test-interactive.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_c_interactive.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_diff.sh
+%{_examplesdir}/%{name}-%{version}/plplot_test
 %if %{with plmeta}
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_plrender.sh
 %endif
-%{_examplesdir}/%{name}-%{version}/c
-%{_examplesdir}/%{name}-%{version}/cmake
-%{_examplesdir}/%{name}-%{version}/CMakeLists.txt
-%{_examplesdir}/%{name}-%{version}/Makefile
 %if %{with perl_pdl}
 # perl examples use PDL::Graphics::PLplot module found in perl-PDL
 %{_examplesdir}/%{name}-%{version}/perl
@@ -900,7 +903,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libplplotcxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.14
+%attr(755,root,root) %ghost %{_libdir}/libplplotcxx.so.15
 
 %files c++-devel
 %defattr(644,root,root,755)
