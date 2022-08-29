@@ -1,6 +1,7 @@
 # TODO:
 # - fix building with installed plplot/plplot-devel (tries to use installed drivers for dyn_test)
 # - bindings: tk-x-plat?
+# - package shapelib support
 # NOTES (see cmake/modules/drivers-init.cmake for some issue notes):
 # aqt driver is Darwin-only
 # wingcc driver is Windows-only
@@ -22,6 +23,7 @@
 %bcond_without	octave		# Octave bindings
 %bcond_with	cgm		# CGM driver, libnistcd library
 %bcond_with	plmeta		# plmeta driver, plrender program, {plm2gir,plpr} scripts
+%bcond_with	shapelib	# shapelib support
 #
 # not yet available on x32 (ocaml 4.02.1), update when upstream will support it
 %ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
@@ -82,6 +84,7 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
+%{?with_shapelib:BuildRequires:	shapelib-devel}
 BuildRequires:	sip-PyQt5
 BuildRequires:	python3-PyQt5-uic
 BuildRequires:	python3-PyQt5-sip
@@ -91,7 +94,7 @@ BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt5-build >= 4
 BuildRequires:	qt5-qmake >= 4
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.605
+BuildRequires:	rpmbuild(macros) >= 1.742
 BuildRequires:	sed >= 4.0
 BuildRequires:	sip
 BuildRequires:	swig
@@ -684,6 +687,7 @@ cd build
 	-DENABLE_tk=ON \
 	-DPLPLOT_USE_QT5=ON \
 	-DFORTRAN_MOD_DIR=%{_includedir}/plplot \
+	%{cmake_on_off shapelib HAVE_SHAPELIB} \
 	-DOCTAVE_INCLUDE_PATH=%{_includedir}/octave \
 	-DOCTAVE_OCT_DIR=%{octave_oct_sitedir} \
 	-DOCTAVE_M_DIR=%{octave_m_sitedir} \
