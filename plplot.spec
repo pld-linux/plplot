@@ -96,7 +96,7 @@ BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt5-build >= 4
 BuildRequires:	qt5-qmake >= 4
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.742
+BuildRequires:	rpmbuild(macros) >= 2.016
 BuildRequires:	sed >= 4.0
 BuildRequires:	sip
 BuildRequires:	swig
@@ -700,6 +700,7 @@ cd build
 	-DPLD_pdf=ON \
 	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
+	-DSIPBUILD_OPTIONS:LIST="--qmake;%{_qt5_qmake}" \
 	-DUSE_INCRTCL_VERSION_4=ON \
 	-DUSE_RPATH=OFF \
 %if %{with itcl}

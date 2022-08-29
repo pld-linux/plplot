@@ -21,7 +21,7 @@ Last-Update: 2021-06-18
 +    configure_file(pyproject.toml pyproject.toml COPYONLY)
 +    add_custom_command(
 +      OUTPUT ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC}
-+      COMMAND ${SIPBUILD_EXECUTABLE} --no-make
++      COMMAND ${SIPBUILD_EXECUTABLE} --no-make ${SIPBUILD_OPTIONS}
 +      )
 +    set(FILES_TO_COPY ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC})
 +    list(TRANSFORM FILES_TO_COPY REPLACE .*/ build/plplot_pyqt5/)
