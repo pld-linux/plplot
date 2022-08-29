@@ -640,7 +640,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
       examples/python/* \
 
 %build
-mkdir build
+install -d build
 cd build
 # required for cmake to find JNI headers/libs when lib64 is in use
 %{?with_java:export JAVA_HOME=%{_jvmlibdir}/java}
