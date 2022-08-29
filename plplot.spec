@@ -697,7 +697,6 @@ cd build
 	-DPLD_pdf=ON \
 	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
-	-DPython_ADDITIONAL_VERSIONS=2.7 \
 	-DUSE_INCRTCL_VERSION_4=ON \
 	-DUSE_RPATH=OFF \
 %if %{with itcl}
