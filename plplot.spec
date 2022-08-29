@@ -37,7 +37,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	7
+Release:	8
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -592,7 +592,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
 %pyrequires_eq	python3-libs
 Requires:	python3-numpy
-Obsoletes:	python3-plplot < 5.15.0-7
+Obsoletes:	python-plplot < 5.15.0-7
 
 %description -n python3-plplot
 PLplot library - Python binding.
@@ -607,7 +607,7 @@ Group:		Libraries/Python
 Requires:	python3-plplot = %{version}-%{release}
 %pyrequires_eq	python3-libs
 Requires:	python3-numpy
-Obsoletes:	python3-plplot-qt5 < 5.15.0-7
+Obsoletes:	python-plplot-qt5 < 5.15.0-7
 
 %description -n python3-plplot-qt5
 PLplot library - Python/PyQt5 binding.
@@ -621,7 +621,7 @@ Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla Pythona
 Group:		Libraries/Python
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	python3-plplot = %{version}-%{release}
-Obsoletes:	python3-plplot-examples < 5.15.0-7
+Obsoletes:	python-plplot-examples < 5.15.0-7
 
 %description -n python3-plplot-examples
 PLplot library - Python binding examples.
