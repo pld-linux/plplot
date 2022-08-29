@@ -1,0 +1,109 @@
+Description: Port to SIP 5/6
+Author: Dmitry Shachnev <mitya57@debian.org>
+Bug: https://sourceforge.net/p/plplot/mailman/message/37165423/
+Bug-Debian: https://bugs.debian.org/964127
+Forwarded: not-needed
+Reviewed-By: Rafael Laboissière <rafael@debian.org>
+Last-Update: 2021-06-18
+
+--- plplot-5.15.0+dfsg.orig/bindings/qt_gui/pyqt5/CMakeLists.txt
++++ plplot-5.15.0+dfsg/bindings/qt_gui/pyqt5/CMakeLists.txt
+@@ -42,11 +42,30 @@ if(ENABLE_pyqt5)
+   #message("DEBUG: PYQT_SIP_DIR = ${PYQT_SIP_DIR}")
+   #message("DEBUG: PYQT_SIP_FLAGS = ${PYQT_SIP_FLAGS}")
+ 
+-  add_custom_command(
+-    OUTPUT ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC}
+-    COMMAND ${SIP_EXECUTABLE} -c . -b plplot_pyqt5.sbf -I${PYQT_SIP_DIR} ${PYQT_SIP_FLAGS} ${CMAKE_CURRENT_SOURCE_DIR}/plplot_pyqt5.sip
+-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/plplot_pyqt5.sip
++  if(SIPBUILD_EXECUTABLE)
++    configure_file(plplot_pyqt5.sip plplot_pyqt5.sip COPYONLY)
++    configure_file(pyproject.toml pyproject.toml COPYONLY)
++    add_custom_command(
++      OUTPUT ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC}
++      COMMAND ${SIPBUILD_EXECUTABLE} --no-make
++      )
++    set(FILES_TO_COPY ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC})
++    list(TRANSFORM FILES_TO_COPY REPLACE .*/ build/plplot_pyqt5/)
++    add_custom_command(
++      OUTPUT ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC} APPEND
++      COMMAND ${CMAKE_COMMAND} -E copy ${FILES_TO_COPY} build/sip.h ${CMAKE_CURRENT_BINARY_DIR}
++      )
++    add_compile_definitions(
++      SIP_PROTECTED_IS_PUBLIC
++      protected=public
+     )
++  else(SIPBUILD_EXECUTABLE)
++    add_custom_command(
++      OUTPUT ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC}
++      COMMAND ${SIP_EXECUTABLE} -c . -b plplot_pyqt5.sbf -I${PYQT_SIP_DIR} ${PYQT_SIP_FLAGS} ${CMAKE_CURRENT_SOURCE_DIR}/plplot_pyqt5.sip
++      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/plplot_pyqt5.sip
++      )
++  endif(SIPBUILD_EXECUTABLE)
+   add_custom_target(generate_pyqt5_source
+     DEPENDS ${plplot_pyqt5_HDR} ${plplot_pyqt5_SRC}
+     )
+--- /dev/null
++++ plplot-5.15.0+dfsg/bindings/qt_gui/pyqt5/pyproject.toml
+@@ -0,0 +1,13 @@
++[tool.sip]
++project-factory = "pyqtbuild:PyQtProject"
++bindings-factory = "pyqtbuild:PyQtBindings"
++
++[tool.sip.metadata]
++name = "plplot"
++
++[tool.sip.project]
++sip-files-dir = "."
++
++[tool.sip.bindings.plplot]
++sip-file = "plplot_pyqt5.sip"
++qmake-QT = ["printsupport", "widgets"]
+--- plplot-5.15.0+dfsg.orig/cmake/modules/qt.cmake
++++ plplot-5.15.0+dfsg/cmake/modules/qt.cmake
+@@ -62,7 +62,8 @@
+ # ENABLE_pyqt5		  - ON means the plplot_pyqt5 Python extension module
+ # 			    is enabled.
+ # ENABLE_smoke            - ON means the smoke plplotqt library is enabled.
+-# SIP_EXECUTABLE	  - full path for sip
++# SIPBUILD_EXECUTABLE	  - full path for sip-build (SIP v5, v6)
++# SIP_EXECUTABLE	  - full path for sip (SIP v4)
+ # PYQT_SIP_DIR		  - sip system directory
+ # PYQT_SIP_FLAGS	  - sip command flags
+ 
+@@ -401,7 +402,25 @@ if(ANY_QT_DEVICE)
+   endif(ENABLE_DYNDRIVERS)
+ endif(ANY_QT_DEVICE)
+ 
+-if(ENABLE_pyqt4 OR ENABLE_pyqt5)
++if(ENABLE_pyqt5)
++  find_program(SIPBUILD_EXECUTABLE sip-build)
++  message(STATUS "pyqt: SIPBUILD_EXECUTABLE = ${SIPBUILD_EXECUTABLE}")
++  if (SIPBUILD_EXECUTABLE)
++    execute_process(
++      COMMAND ${SIPBUILD_EXECUTABLE} -V
++      OUTPUT_VARIABLE SIP_VERSION
++      RESULT_VARIABLE SIP_VERSION_ERR
++      OUTPUT_STRIP_TRAILING_WHITESPACE
++      )
++    if(SIP_VERSION_ERR)
++      message(AUTHOR_WARNING "sip-build -V command could not determine sip version")
++    else(SIP_VERSION_ERR)
++      message(STATUS "SIP_VERSION = ${SIP_VERSION}")
++    endif(SIP_VERSION_ERR)
++  endif(SIPBUILD_EXECUTABLE)
++endif(ENABLE_pyqt5)
++
++if(ENABLE_pyqt4 OR (ENABLE_pyqt5 AND NOT SIPBUILD_EXECUTABLE))
+   find_program(SIP_EXECUTABLE sip)
+   message(STATUS "pyqt: SIP_EXECUTABLE = ${SIP_EXECUTABLE}")
+   if(SIP_EXECUTABLE)
+@@ -566,7 +585,7 @@ if(ENABLE_pyqt4 OR ENABLE_pyqt5)
+     set(ENABLE_pyqt4 OFF CACHE BOOL "Enable pyqt4 Python extension module " FORCE)
+     set(ENABLE_pyqt5 OFF CACHE BOOL "Enable pyqt5 Python extension module " FORCE)
+   endif(SIP_EXECUTABLE)
+-endif(ENABLE_pyqt4 OR ENABLE_pyqt5)
++endif(ENABLE_pyqt4 OR (ENABLE_pyqt5 AND NOT SIPBUILD_EXECUTABLE))
+ 
+ if(ENABLE_smoke)
+   if(PLPLOT_USE_QT5)

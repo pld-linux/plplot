@@ -46,6 +46,7 @@ Patch0:		%{name}-no-DISPLAY.patch
 Patch1:		%{name}-plmeta.patch
 Patch2:		%{name}-d.patch
 Patch3:		qt-5.15.patch
+Patch4:		%{name}-sip-build-support.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	Qt5Gui-devel
 BuildRequires:	Qt5PrintSupport-devel
@@ -86,6 +87,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
 %{?with_shapelib:BuildRequires:	shapelib-devel}
 BuildRequires:	sip-PyQt5
+BuildRequires:	python3-PyQt-builder
 BuildRequires:	python3-PyQt5-uic
 BuildRequires:	python3-PyQt5-sip
 BuildRequires:	python3-numpy-devel >= 15.3
@@ -633,6 +635,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python3}\1,' \
 		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
