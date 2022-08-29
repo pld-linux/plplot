@@ -98,7 +98,7 @@ BuildRequires:	qt5-qmake >= 4
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.016
 BuildRequires:	sed >= 4.0
-BuildRequires:	sip
+BuildRequires:	sip6
 BuildRequires:	swig
 BuildRequires:	swig-python
 BuildRequires:	tcl-devel >= 8.5
