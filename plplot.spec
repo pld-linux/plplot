@@ -35,7 +35,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	6
+Release:	7
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -83,11 +83,10 @@ BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
 BuildRequires:	sip-PyQt5
-BuildRequires:	python-PyQt5-uic
-BuildRequires:	python-PyQt5-sip
-BuildRequires:	python-numpy-devel >= 15.3
-BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	python-sip-devel
+BuildRequires:	python3-PyQt5-uic
+BuildRequires:	python3-PyQt5-sip
+BuildRequires:	python3-numpy-devel >= 15.3
+BuildRequires:	python3-devel
 BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt5-build >= 4
 BuildRequires:	qt5-qmake >= 4
@@ -580,46 +579,49 @@ Development files for PLcairo OCaml library.
 %description -n ocaml-plcairo-devel -l pl.UTF-8
 Pliki programistyczne biblioteki OCamla PLcairo.
 
-%package -n python-plplot
+%package -n python3-plplot
 Summary:	PLplot library - Python binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Pythona
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
-%pyrequires_eq	python-libs
-Requires:	python-numpy
+%pyrequires_eq	python3-libs
+Requires:	python3-numpy
+Obsoletes:	python3-plplot < 5.15.0-7
 
-%description -n python-plplot
+%description -n python3-plplot
 PLplot library - Python binding.
 
-%description -n python-plplot -l pl.UTF-8
+%description -n python3-plplot -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Pythona.
 
-%package -n python-plplot-qt5
+%package -n python3-plplot-qt5
 Summary:	PLplot library - PyQt5 binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla PyQt5
 Group:		Libraries/Python
-Requires:	python-plplot = %{version}-%{release}
-%pyrequires_eq	python-libs
-Requires:	python-numpy
+Requires:	python3-plplot = %{version}-%{release}
+%pyrequires_eq	python3-libs
+Requires:	python3-numpy
+Obsoletes:	python3-plplot-qt5 < 5.15.0-7
 
-%description -n python-plplot-qt5
+%description -n python3-plplot-qt5
 PLplot library - Python/PyQt5 binding.
 
-%description -n python-plplot-qt5 -l pl.UTF-8
+%description -n python3-plplot-qt5 -l pl.UTF-8
 Biblioteka PLplot - wiązanie dla Pythona/PyQt5.
 
-%package -n python-plplot-examples
+%package -n python3-plplot-examples
 Summary:	PLplot library - Python binding examples
 Summary(pl.UTF-8):	Biblioteka PLplot - przykłady do wiązania dla Pythona
 Group:		Libraries/Python
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	python-plplot = %{version}-%{release}
+Requires:	python3-plplot = %{version}-%{release}
+Obsoletes:	python3-plplot-examples < 5.15.0-7
 
-%description -n python-plplot-examples
+%description -n python3-plplot-examples
 PLplot library - Python binding examples.
 
-%description -n python-plplot-examples -l pl.UTF-8
+%description -n python3-plplot-examples -l pl.UTF-8
 Biblioteka PLplot - przykłady do wiązania dla Pythona.
 
 %prep
@@ -629,9 +631,9 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch2 -p1
 %patch3 -p1
 
-%{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
-		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
-		-e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python}\1,' \
+%{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python3}\1,' \
+		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
+		-e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python3}\1,' \
       examples/python/* \
 
 %build
@@ -691,7 +693,6 @@ cd build
 	-DPLD_pdf=ON \
 	%{?with_plmeta:-DPLD_plmeta=ON} \
 	-DPLD_pstex=ON \
-	-DFORCE_PYTHON2=ON \
 	-DPython_ADDITIONAL_VERSIONS=2.7 \
 	-DUSE_INCRTCL_VERSION_4=ON \
 	-DUSE_RPATH=OFF \
@@ -718,9 +719,8 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__rm} -rf installed-docs
 %{__mv} $RPM_BUILD_ROOT%{_docdir}/plplot installed-docs
 
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_postclean
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -1089,21 +1089,26 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %endif
 
-%files -n python-plplot
+%files -n python3-plplot
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_Pltk_init.so
-%attr(755,root,root) %{py_sitedir}/_plplotc.so
-%{py_sitedir}/Plframe.py[co]
-%{py_sitedir}/Pltk_init.py[co]
-%{py_sitedir}/plplotc.py[co]
-%{py_sitedir}/plplot.py[co]
-%{py_sitedir}/TclSup.py[co]
+%attr(755,root,root) %{py3_sitedir}/_Pltk_init.so
+%attr(755,root,root) %{py3_sitedir}/_plplotc.so
+%{py3_sitedir}/__pycache__/Plframe.cpython-*.py[co]
+%{py3_sitedir}/__pycache__/Pltk_init.cpython-*.py[co]
+%{py3_sitedir}/__pycache__/plplotc.cpython-*.py[co]
+%{py3_sitedir}/__pycache__/plplot.cpython-*.py[co]
+%{py3_sitedir}/__pycache__/TclSup.cpython-*.py[co]
+%{py3_sitedir}/Plframe.py
+%{py3_sitedir}/Pltk_init.py
+%{py3_sitedir}/plplotc.py
+%{py3_sitedir}/plplot.py
+%{py3_sitedir}/TclSup.py
 
-%files -n python-plplot-qt5
+%files -n python3-plplot-qt5
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/plplot_pyqt5.so
+%attr(755,root,root) %{py3_sitedir}/plplot_pyqt5.so
 
-%files -n python-plplot-examples
+%files -n python3-plplot-examples
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/test_python.sh
 %{_examplesdir}/%{name}-%{version}/python
