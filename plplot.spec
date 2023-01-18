@@ -21,6 +21,7 @@
 %bcond_with	ocaml_cairo	# OCaml-Cairo component
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without	octave		# Octave bindings
+%bcond_without	pyqt		# PyQt5 support
 %bcond_with	cgm		# CGM driver, libnistcd library
 %bcond_with	plmeta		# plmeta driver, plrender program, {plm2gir,plpr} scripts
 %bcond_with	shapelib	# shapelib support
@@ -84,9 +85,11 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
+%if %{with pyqt}
 BuildRequires:	python3-PyQt-builder
 BuildRequires:	python3-PyQt5-uic
 BuildRequires:	python3-PyQt5-sip
+%endif
 BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	python3-numpy-devel >= 15.3
 BuildRequires:	qhull-devel >= 2011.1
@@ -96,8 +99,10 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.016
 BuildRequires:	sed >= 4.0
 %{?with_shapelib:BuildRequires:	shapelib-devel}
+%if %{with pyqt}
 BuildRequires:	sip-PyQt5
 BuildRequires:	sip6
+%endif
 BuildRequires:	swig
 BuildRequires:	swig-python
 BuildRequires:	tcl-devel >= 8.5
@@ -690,6 +695,7 @@ cd build
 %endif
 	-DENABLE_octave=%{?with_octave:ON}%{!?with_octave:OFF} \
 	%{!?with_perl_pdl:-DENABLE_pdl=OFF} \
+	%{!?with_pyqt:-DENABLE_pyqt5=OFF} \
 	-DENABLE_tk=ON \
 	-DPLPLOT_USE_QT5=ON \
 	-DFORTRAN_MOD_DIR=%{_includedir}/plplot \
@@ -1114,9 +1120,11 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/plplot.py
 %{py3_sitedir}/TclSup.py
 
+%if %{with pyqt}
 %files -n python3-plplot-qt5
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py3_sitedir}/plplot_pyqt5.so
+%endif
 
 %files -n python3-plplot-examples
 %defattr(644,root,root,755)
