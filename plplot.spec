@@ -40,7 +40,7 @@ Version:	5.15.0
 Release:	9
 License:	LGPL v2+
 Group:		Libraries
-Source0:	http://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
+Source0:	https://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
 # Source0-md5:	36aec5bfadc2e207cf8ee39f573c9303
 Patch0:		%{name}-no-DISPLAY.patch
 Patch1:		%{name}-plmeta.patch
@@ -48,13 +48,12 @@ Patch2:		%{name}-d.patch
 Patch3:		qt-5.15.patch
 Patch4:		%{name}-sip-build-support.patch
 URL:		http://plplot.sourceforge.net/
-BuildRequires:	Qt5Gui-devel
-BuildRequires:	Qt5PrintSupport-devel
-BuildRequires:	Qt5Svg-devel
-BuildRequires:	Qt5Xml-devel
+BuildRequires:	Qt5Gui-devel >= 5
+BuildRequires:	Qt5PrintSupport-devel >= 5
+BuildRequires:	Qt5Svg-devel >= 5
 BuildRequires:	agg-devel
 %{?with_ocaml_cairo:BuildRequires:	cairo-devel}
-BuildRequires:	cmake >= 2.6.4
+BuildRequires:	cmake >= 3.13.2
 BuildRequires:	docbook-style-dsssl
 %{?with_d:BuildRequires:	dmd}
 BuildRequires:	fftw3-devel
@@ -85,19 +84,19 @@ BuildRequires:	perl-XML-Parser
 BuildRequires:	perl-XML-SAX-Expat
 BuildRequires:	pkgconfig
 BuildRequires:	pango-devel
-%{?with_shapelib:BuildRequires:	shapelib-devel}
-BuildRequires:	sip-PyQt5
 BuildRequires:	python3-PyQt-builder
 BuildRequires:	python3-PyQt5-uic
 BuildRequires:	python3-PyQt5-sip
+BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	python3-numpy-devel >= 15.3
-BuildRequires:	python3-devel
 BuildRequires:	qhull-devel >= 2011.1
-BuildRequires:	qt5-build >= 4
-BuildRequires:	qt5-qmake >= 4
+BuildRequires:	qt5-build >= 5
+BuildRequires:	qt5-qmake >= 5
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.016
 BuildRequires:	sed >= 4.0
+%{?with_shapelib:BuildRequires:	shapelib-devel}
+BuildRequires:	sip-PyQt5
 BuildRequires:	sip6
 BuildRequires:	swig
 BuildRequires:	swig-python
@@ -121,7 +120,7 @@ BuildRequires:	ocaml-lablgtk2-devel
 %endif
 BuildConflicts:	plplot
 BuildConflicts:	plplot-devel
-Obsoletes:	plplot-f77
+Obsoletes:	plplot-f77 < 5.10.0-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_oct_sitedir	%(octave-config --oct-site-dir)
@@ -239,6 +238,7 @@ Summary:	Qt5 driver for PLplot library
 Summary(pl.UTF-8):	Sterownik Qt5 dla biblioteki PLplot
 Group:		Libraries
 Requires:	%{name}-qt5 = %{version}-%{release}
+Obsoletes:	plplot-driver-qt4 < 5.14.0-4
 
 %description driver-qt5
 Qt5 driver for PLplot library. Supports Qt5 output.
@@ -279,8 +279,8 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 2.1
 Requires:	qhull-devel
-Obsoletes:	plplot-f77-devel
-Obsoletes:	plplot-static
+Obsoletes:	plplot-f77-devel < 5.10.0-2
+Obsoletes:	plplot-static < 5.9.6
 
 %description devel
 Header files for PLplot library.
@@ -307,7 +307,7 @@ Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	libstdc++-devel
-Obsoletes:	plplot-c++-static
+Obsoletes:	plplot-c++-static < 5.9.6
 
 %description c++-devel
 PLplot library - C++ binding development files.
@@ -332,7 +332,7 @@ Summary:	PLplot library - FORTRAN 95 binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla języka FORTRAN 95
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Obsoletes:	plplot-f95
+Obsoletes:	plplot-f95 < 5.14.0
 
 %description fortran
 PLplot library - FORTRAN 95 binding.
@@ -347,7 +347,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-fortran = %{version}-%{release}
 Requires:	gcc-fortran
-Obsoletes:	plplot-f95-devel
+Obsoletes:	plplot-f95-devel < 5.14.0
 
 %description fortran-devel
 PLplot library - FORTRAN 95 binding development files.
@@ -399,7 +399,7 @@ Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Javy
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-java = %{version}-%{release}
-Obsoletes:	plplot-java-static
+Obsoletes:	plplot-java-static < 5.9.6
 
 %description java-devel
 PLplot library - Java binding development files.
@@ -426,7 +426,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-tcl = %{version}-%{release}
 %{?with_itcl:Requires:	itcl-devel}
-Obsoletes:	plplot-tcl-static
+Obsoletes:	plplot-tcl-static < 5.9.6
 
 %description tcl-devel
 PLplot library - Tcl/Tk binding development files.
@@ -439,6 +439,7 @@ Summary:	PLplot library - Qt5 binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla Qt5
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Obsoletes:	plplot-qt4 < 5.14.0-4
 
 %description qt5
 PLplot library - Qt5 binding.
@@ -452,9 +453,10 @@ Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla Qt5
 Group:		Development/Libraries
 Requires:	%{name}-qt5 = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	QtGui-devel
-Requires:	QtSvg-devel
-Requires:	QtXml-devel
+Requires:	Qt5Gui-devel >= 5
+Requires:	Qt5PrintSupport-devel >= 5
+Requires:	Qt5Svg-devel >= 5
+Obsoletes:	plplot-qt4-devel < 5.14.0-4
 
 %description qt5-devel
 PLplot library - Qt5 binding development files.
@@ -607,6 +609,7 @@ Group:		Libraries/Python
 Requires:	python3-plplot = %{version}-%{release}
 %pyrequires_eq	python3-libs
 Requires:	python3-numpy
+Obsoletes:	python-plplot-qt4 < 5.14.0-4
 Obsoletes:	python-plplot-qt5 < 5.15.0-7
 
 %description -n python3-plplot-qt5
