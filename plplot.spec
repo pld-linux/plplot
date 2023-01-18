@@ -651,12 +651,10 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
       examples/python/* \
 
 %build
-install -d build
-cd build
 # required for cmake to find JNI headers/libs when lib64 is in use
 %{?with_java:export JAVA_HOME=%{_jvmlibdir}/java}
 # NOTE: no %{_libdir}/jni in PLD, use plain %{_libdir}
-%cmake .. \
+%cmake -B build \
 %if %{with ada}
 	-DENABLE_ada=ON \
 	-DADA_INCLUDE_DIR=%{ada_incdir} \
@@ -720,7 +718,7 @@ cd build
 	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON
 
-%{__make}
+%{__make} -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
