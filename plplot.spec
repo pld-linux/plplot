@@ -38,7 +38,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	12
+Release:	13
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -109,7 +109,7 @@ BuildRequires:	tcl-devel >= 8.5
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
 BuildRequires:	tk-devel >= 8.5
-BuildRequires:	wxGTK2-unicode-devel >= 2.6.0
+BuildRequires:	wxGTK3-unicode-devel >= 2.6.0
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libX11-devel
@@ -715,7 +715,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 	-DPLPLOT_ITK_VERSION="$(rpm -q itk --qf '%%{VERSION}')" \
 	-DIWIDGETS_VERSIONS_LIST="$(rpm -q iwidgets --qf '%%{VERSION}');$(rpm -q itk --qf '%%{VERSION}');$(rpm -q itcl --qf '%%{VERSION}')" \
 %endif
-	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk2-unicode-config \
+	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-gtk3-unicode-config \
 	-DwxWidgets_USE_UNICODE=ON
 
 %{__make} -C build
