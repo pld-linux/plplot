@@ -38,7 +38,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	16
+Release:	17
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -474,7 +474,7 @@ Summary:	PLplot library - wxWidgets binding
 Summary(pl.UTF-8):	Biblioteka PLplot - wiązanie dla wxWidgets
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	wxGTK2-unicode >= 2.6.0
+Requires:	wxGTK3-unicode >= 2.6.0
 
 %description wxwidgets
 PLplot library - wxwidgets binding.
@@ -488,7 +488,7 @@ Summary(pl.UTF-8):	Biblioteka PLplot - pliki programistyczne wiązania dla wxWid
 Group:		Development/Libraries
 Requires:	%{name}-wxwidgets = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	wxGTK2-unicode-devel >= 2.6.0
+Requires:	wxGTK3-unicode-devel >= 2.6.0
 
 %description wxwidgets-devel
 PLplot library - wxWidgets binding development files.
