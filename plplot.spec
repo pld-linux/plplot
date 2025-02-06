@@ -100,7 +100,7 @@ BuildRequires:	rpmbuild(macros) >= 2.016
 BuildRequires:	sed >= 4.0
 %{?with_shapelib:BuildRequires:	shapelib-devel}
 %if %{with pyqt}
-BuildRequires:	sip-PyQt5
+BuildRequires:	python3-PyQt5-devel
 BuildRequires:	sip6
 %endif
 BuildRequires:	swig
