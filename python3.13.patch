@@ -1,0 +1,49 @@
+diff --git a/bindings/python/plplotc.i b/bindings/python/plplotc.i
+index 050ef54e1..84a133b83 100644
+--- a/bindings/python/plplotc.i
++++ b/bindings/python/plplotc.i
+@@ -1039,7 +1039,7 @@ typedef void ( *label_func )( PLINT, PLFLT, char *, PLINT, PLPointer );
+                 return;
+             }
+             // call the python function
+-            result = PyEval_CallObject( python_pltr, arglist );
++            result = PyObject_CallObject( python_pltr, arglist );
+             // release the argument list
+             Py_CLEAR( arglist );
+             // check and unpack the result
+@@ -1088,7 +1088,7 @@ typedef void ( *label_func )( PLINT, PLFLT, char *, PLINT, PLPointer );
+             // build the argument list
+                 arglist = Py_BuildValue( "(iiO)", x, y, pdata );
+             // call the python function
+-            result = PyEval_CallObject( python_f2eval, arglist );
++            result = PyObject_CallObject( python_f2eval, arglist );
+             // release the argument list
+             Py_CLEAR( arglist );
+             // check and unpack the result
+@@ -1132,7 +1132,7 @@ typedef void ( *label_func )( PLINT, PLFLT, char *, PLINT, PLPointer );
+             arglist = Py_BuildValue( "(lfO)", axis, value, pdata );
+ #endif
+             // call the python function
+-            result = PyEval_CallObject( python_label, arglist );
++            result = PyObject_CallObject( python_label, arglist );
+             // release the argument list
+             //Py_CLEAR(arglist);
+             // check and unpack the result
+@@ -1189,7 +1189,7 @@ typedef void ( *label_func )( PLINT, PLFLT, char *, PLINT, PLPointer );
+             py      = PyArray_SimpleNewFromData( 1, &n, NPY_PLFLT, (void *) yt );
+             arglist = Py_BuildValue( "(ddOOO)", x, y, px, py, pdata );
+             // call the python function
+-            result = PyEval_CallObject( python_ct, arglist );
++            result = PyObject_CallObject( python_ct, arglist );
+             // release the argument list
+             Py_CLEAR( arglist );
+             Py_CLEAR( px );
+@@ -1230,7 +1230,7 @@ typedef void ( *label_func )( PLINT, PLFLT, char *, PLINT, PLPointer );
+ #endif
+             arglist = Py_BuildValue( "(iOO)", n, px, py );
+             // call the python function
+-            result = PyEval_CallObject( python_mapform, arglist );
++            result = PyObject_CallObject( python_mapform, arglist );
+             // release the argument list
+             Py_CLEAR( arglist );
+             Py_CLEAR( px );

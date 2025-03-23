@@ -38,7 +38,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	19
+Release:	20
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -48,6 +48,7 @@ Patch1:		%{name}-plmeta.patch
 Patch2:		%{name}-d.patch
 Patch3:		qt-5.15.patch
 Patch4:		%{name}-sip-build-support.patch
+Patch5:		python3.13.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	Qt5Gui-devel >= 5
 BuildRequires:	Qt5PrintSupport-devel >= 5
@@ -644,6 +645,7 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch -P2 -p1
 %patch -P3 -p1
 %patch -P4 -p1
+%patch -P5 -p1
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python3}\1,' \
 		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
@@ -653,6 +655,9 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %build
 # required for cmake to find JNI headers/libs when lib64 is in use
 %{?with_java:export JAVA_HOME=%{_jvmlibdir}/java}
+_numpy_cflags="$(/usr/bin/numpy-config --cflags)"
+export CFLAGS="%{rpmcflags} $_numpy_cflags"
+export CXXFLAGS="%{rpmcxxflags} $_numpy_cflags"
 # NOTE: no %{_libdir}/jni in PLD, use plain %{_libdir}
 %cmake -B build \
 %if %{with ada}
