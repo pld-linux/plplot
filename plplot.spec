@@ -17,9 +17,9 @@
 %bcond_without	java		# Java binding
 %bcond_without	itcl		# [incr Tcl]/[incr Tk] support in Tcl/Tk binding
 %bcond_without	lua		# Lua binding
-%bcond_without	ocaml		# OCaml binding
+%bcond_with	ocaml		# OCaml binding
 %bcond_with	ocaml_cairo	# OCaml-Cairo component
-%bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
+%bcond_with	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without	octave		# Octave bindings
 %bcond_without	pyqt		# PyQt5 support
 %bcond_with	cgm		# CGM driver, libnistcd library
