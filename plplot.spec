@@ -38,7 +38,7 @@ Summary:	PLplot - a library of functions that are useful for making scientific p
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
 Version:	5.15.0
-Release:	22
+Release:	23
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://downloads.sourceforge.net/plplot/%{name}-%{version}.tar.gz
@@ -49,6 +49,8 @@ Patch2:		%{name}-d.patch
 Patch3:		qt-5.15.patch
 Patch4:		%{name}-sip-build-support.patch
 Patch5:		python3.13.patch
+Patch6:		swig-4.3.patch
+Patch7:		signal.patch
 URL:		http://plplot.sourceforge.net/
 BuildRequires:	Qt5Gui-devel >= 5
 BuildRequires:	Qt5PrintSupport-devel >= 5
@@ -646,6 +648,8 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %patch -P3 -p1
 %patch -P4 -p1
 %patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python3}\1,' \
 		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
