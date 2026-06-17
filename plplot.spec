@@ -34,6 +34,8 @@
 %undefine	with_ada
 %endif
 
+%{?with_java:%{?use_default_jdk}}
+
 Summary:	PLplot - a library of functions that are useful for making scientific plots
 Summary(pl.UTF-8):	PLplot - biblioteka funkcji przydatnych do tworzenia wykresów naukowych
 Name:		plplot
@@ -69,7 +71,7 @@ BuildRequires:	gcc-fortran
 %{?with_itcl:BuildRequires:	itcl-devel >= 3.4.1}
 %{?with_itcl:BuildRequires:	itk-devel >= 3.4}
 BuildRequires:	jadetex
-%{?with_java:BuildRequires:	jdk}
+%{?with_java:%buildrequires_jdk}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	lapack-devel
 BuildRequires:	libLASi-devel
@@ -99,7 +101,7 @@ BuildRequires:	qhull-devel >= 2011.1
 BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-qmake >= 5
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 2.016
+BuildRequires:	rpmbuild(macros) >= 2.021
 BuildRequires:	sed >= 4.0
 %{?with_shapelib:BuildRequires:	shapelib-devel}
 %if %{with pyqt}
@@ -654,11 +656,10 @@ Biblioteka PLplot - przykłady do wiązania dla Pythona.
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python3}\1,' \
 		-e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
 		-e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python3}\1,' \
-      examples/python/* \
+	examples/python/*
 
 %build
-# required for cmake to find JNI headers/libs when lib64 is in use
-%{?with_java:export JAVA_HOME=%{_jvmlibdir}/java}
+%{?with_java:export JAVA_HOME=%{java_home}}
 _numpy_cflags="$(/usr/bin/numpy-config --cflags)"
 export CFLAGS="%{rpmcflags} $_numpy_cflags"
 export CXXFLAGS="%{rpmcxxflags} $_numpy_cflags"
@@ -677,9 +678,6 @@ export CXXFLAGS="%{rpmcxxflags} $_numpy_cflags"
 	-DENABLE_d=OFF \
 %endif
 %if %{with java}
-	-DCMAKE_Java_RUNTIME=%{java} \
-	-DCMAKE_Java_COMPILER=%{javac} \
-	-DCMAKE_Java_ARCHIVE=%{jar} \
 	-DJAR_DIR=%{_javadir} \
 	-DJAVAWRAPPER_DIR=%{_libdir} \
 %else
